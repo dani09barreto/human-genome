@@ -18,7 +18,7 @@ class Controller{
     static void decodificar (Shell::argv_t arvs);
     static void ruta_mas_corta (Shell::argv_t arvs);
     static void base_remota (Shell::argv_t arvs);
-    static void salir ();
+    static void salir (Shell::argv_t arvs);
 
 };
 

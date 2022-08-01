@@ -22,11 +22,9 @@ void Manager::init (){
     tokens.push_back(token);
 
     for (Shell shell: this->commands){   
-        if(shell.getCommand()==tokens[0]){
+        if(shell.getCommand() == tokens[0]){
             detected = true;
-            tokens.erase(tokens.begin());// Borramos el comando y enviamos solo los datos
-            shell.call(tokens);     
-            
+            shell.call(tokens);            
         }
             
     }       
