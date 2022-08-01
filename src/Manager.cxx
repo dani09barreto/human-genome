@@ -2,26 +2,41 @@
 #include "Manager.h"
 #include <iostream>
 #include "shell.h"
+#include <sstream>
 
 Manager::Manager(std::vector<Shell> commands){
     this->commands = commands;
 }
 
 void Manager::init (){
+    bool detected = false;
     std::cout << "$";
-    std::vector <std::string> a;
+    std::vector <std::string> tokens;
     std::string temp;
-    std::cin >> temp;
-    a.push_back(temp);
+    std::getline(std::cin,temp);
 
+    std::stringstream str_stream(temp);
+    std:: string token;
 
-    for (Shell shell: this->commands){
-        shell.call(a);
-    }
+    while(std::getline(str_stream,token,' '))
+    tokens.push_back(token);
+
+    for (Shell shell: this->commands){   
+        if(shell.getCommand()==tokens[0]){
+            detected = true;
+            tokens.erase(tokens.begin());// Borramos el comando y enviamos solo los datos
+            shell.call(tokens);     
+            
+        }
+            
+    }       
     //programa inicia
     //metodo de tokenisacion que se añade al vector de argumentos
 }
 
 void Manager::commandHelp (){
-    // funcion que muestra todos los comandos
+    for (Shell shell: this->commands){
+        std::cout<<"Comandos:\n";
+        std::cout<<shell.getCommand();
+    }
 }
