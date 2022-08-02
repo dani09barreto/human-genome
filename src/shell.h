@@ -10,7 +10,7 @@ class Shell{
     
     public:
         using argv_t = std::vector<std::string>;  //lista de argumentos
-        using callFunction_t = std::function<void(argv_t)>; // llamado de una funcion por un comando
+        using callFunction_t = std::function<void(argv_t, Shell)>; // llamado de una funcion por un comando
 
     private:
         std::string command;
@@ -36,7 +36,9 @@ class Shell{
 
     std::string getCommandDescription ();
 
-    void call (argv_t argvs) const;
+    int getArgc();
+
+    void call (argv_t argvs, Shell command) const;
 
 
     class SyntaxError : public std::exception {
