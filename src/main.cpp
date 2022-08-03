@@ -2,7 +2,7 @@
 #include "Manager.h"
 #include <vector>
 #include "Controller.h"
-
+//Lista de todos los comandos posibles que se pueden ejecutar en el programa.
 std::vector <Shell> commands = {
     Shell("cargar", Controller::Cargar, "cargar <nombre_archivo>", "carga el archivo especifico", 2),
     Shell("conteo",Controller::conteo,"conteo","Imprime la cantidad de secuencias",1), 
@@ -19,6 +19,7 @@ std::vector <Shell> commands = {
 };
 
 int main(int argc, char const *argv[]){
+	//Inicializar al manager, gestionador de comandos
     Manager Manager {commands};
     Manager.init();
     return 0;

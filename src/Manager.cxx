@@ -15,29 +15,31 @@ void Manager::init(){
     std::cout << "\n$";
         std::vector<std::string> tokens;
         std::string temp;
-        std::getline(std::cin, temp);
+        std::getline(std::cin, temp); //Recibir cada comando
 
         std::stringstream str_stream(temp);
         std::string token;
-
+		//Separarlo para luego tokenizarlo en un vector
         while (std::getline(str_stream, token, ' '))
             tokens.push_back(token);
 
         try{
             for (Shell shell : this->commands){
+            //Evaluar si el comando existe
                 if (shell.getCommand() == tokens[0]){
                     detected = true;
                     shell.call(tokens, shell);
                 }
             }
-            if (tokens[0].compare("help") == 0){
+            if (tokens[0].compare("help") == 0){//Si es el comando ayuda
+            	
                     this->commandHelp();
                     detected = true;
             }
             if (!detected)
                 throw Shell::SyntaxError(Shell::SyntaxError::TypeError::COMMAND_DONT_EXIST);
         }
-        catch(Shell::SyntaxError &e){
+        catch(Shell::SyntaxError &e){//Si el comando ingresado no existe
             std::cout << "[Error]: " << e.error();
         }
         catch(const std::exception& e){
@@ -46,13 +48,12 @@ void Manager::init(){
         
         detected = false;
     }
-    // programa inicia
-    // metodo de tokenisacion que se añade al vector de argumentos
+    
 }
 
 void Manager::commandHelp(){
     std::cout << "Comandos:\n";
-    for (Shell shell : this->commands){
+    for (Shell shell : this->commands){//Traer uso y descripción del comando.
         std::cout << shell.getCommandUsage() <<" "<< shell.getCommandDescription() << "\n";
     }
 }   

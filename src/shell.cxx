@@ -4,7 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 
-//Archivo de definicion de funciones shell
+//Archivo de implementación de funciones shell
 
 Shell::Shell(std::string command, callFunction_t myFunction, std::string commandUsage, std::string commandDescription, int argc){
     this->command = command;
@@ -33,7 +33,7 @@ void Shell::call(argv_t argvs, Shell command) const{
 }
 /*
 .
-. definicion resto de funciones
+. Definicion resto de funciones
 .
 */
 
