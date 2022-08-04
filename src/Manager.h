@@ -1,7 +1,7 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
-#include "shell.h"
+#include "Shell.h"
 #include <vector>
 
 class Manager{

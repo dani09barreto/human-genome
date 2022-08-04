@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "shell.h"
+#include "Shell.h"
 
 class Controller{
 

@@ -1,7 +1,7 @@
 
 #include "Manager.h"
 #include <iostream>
-#include "shell.h"
+#include "Shell.h"
 #include <sstream>
 #include <string.h>
 
