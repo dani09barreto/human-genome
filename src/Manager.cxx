@@ -32,14 +32,13 @@ void Manager::init(){
                 }
             }
             if (tokens[0].compare("help") == 0){//Si es el comando ayuda
-            	
                     this->commandHelp();
                     detected = true;
             }
             if (!detected)
                 throw Shell::SyntaxError(Shell::SyntaxError::TypeError::COMMAND_DONT_EXIST);
         }
-        catch(Shell::SyntaxError &e){//Si el comando ingresado no existe
+        catch(Shell::SyntaxError &e){//excepciones generadas en la compilacion
             std::cout << "[Error]: " << e.error();
         }
         catch(const std::exception& e){
@@ -52,8 +51,8 @@ void Manager::init(){
 }
 
 void Manager::commandHelp(){
-    std::cout << "Comandos:\n";
+    std::cout << "Comandos:\n\n";
     for (Shell shell : this->commands){//Traer uso y descripción del comando.
-        std::cout << shell.getCommandUsage() <<" "<< shell.getCommandDescription() << "\n";
+        std::cout << "- " << shell.getCommand() <<"\n\t"<< "Uso: "<< shell.getCommandUsage() <<"\n\tDescripcion: "<< shell.getCommandDescription() << "\n\n";
     }
 }   

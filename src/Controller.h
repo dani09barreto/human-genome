@@ -19,7 +19,8 @@ class Controller{
     static void ruta_mas_corta (Shell::argv_t argvs, Shell command);
     static void base_remota (Shell::argv_t argvs, Shell command);
     static void salir (Shell::argv_t argvs, Shell command);
-    static void help (Shell::argv_t argvs, Shell command);
+    static void verificationARGV (Shell::argv_t argvs, Shell command);
+    static void clear (Shell::argv_t argvs, Shell command);
 
 };
 
