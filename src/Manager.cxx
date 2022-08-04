@@ -12,7 +12,7 @@ Manager::Manager(std::vector<Shell> commands){
 void Manager::init(){
     bool detected = false;
     while (true){
-    std::cout << "\n$";
+        std::cout << "\n$";
         std::vector<std::string> tokens;
         std::string temp;
         std::getline(std::cin, temp); //Recibir cada comando

@@ -52,5 +52,9 @@ void Controller::verificationARGV(Shell::argv_t argvs, Shell command){
 }
 
 void Controller::clear (Shell::argv_t argvs, Shell command){
+    #ifdef WIN32
     system("cls");
+    #else 
+    system("clear");
+    #endif
 }
