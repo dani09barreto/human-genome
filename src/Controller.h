@@ -21,7 +21,6 @@ class Controller{
     static void salir (Shell::argv_t argvs, Shell command);
     static void verificationARGV (Shell::argv_t argvs, Shell command);
     static void clear (Shell::argv_t argvs, Shell command);
-
 };
 
 #endif

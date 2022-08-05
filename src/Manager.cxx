@@ -26,14 +26,16 @@ void Manager::init(){
         try{
             for (Shell shell : this->commands){
             //Evaluar si el comando existe
-                if (shell.getCommand() == tokens[0]){
-                    detected = true;
-                    shell.call(tokens, shell);
-                }
+            if (shell.getCommand() == tokens[0]){
+                detected = true;
+                shell.call(tokens, shell);
             }
-            if (tokens[0].compare("help") == 0){//Si es el comando ayuda
-                    this->commandHelp();
-                    detected = true;
+
+            if(tokens[0].compare("ayuda") == 0 && tokens.size() == 1){
+                this->commandHelp();
+                detected = true;
+                break;                
+            }
             }
             if (!detected)
                 throw Shell::SyntaxError(Shell::SyntaxError::TypeError::COMMAND_DONT_EXIST);
@@ -51,6 +53,7 @@ void Manager::init(){
 }
 
 void Manager::commandHelp(){
+
     std::cout << "Comandos:\n\n";
     for (Shell shell : this->commands){//Traer uso y descripción del comando.
         std::cout << "- " << shell.getCommand() <<"\n\t"<< "Uso: "<< shell.getCommandUsage() <<"\n\tDescripcion: "<< shell.getCommandDescription() << "\n\n";

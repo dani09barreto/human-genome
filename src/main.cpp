@@ -16,7 +16,7 @@ std::vector <Shell> commands = {
     Shell("ruta_mas_corta",Controller::decodificar,"ruta_mas_corta descripcion_secuencia i j x y","imprime en pantalla la secuencia de vertices (bases) del grafo que describen la ruta mas corta \n\tentre la base ubicada en la posicion [i ,j ] de la matriz de la secuenciadescripcion_secuencia y la base ubicada \n\ten la posicion [x ,y ] de la misma matriz",6), 
     Shell("base_remota",Controller::Cargar,"base_remota descripcion_secuencia i j","busca la ubicacion de la misma base (misma letra) mas lejana dentro de la matriz",4),
     Shell("salir",Controller::salir,"salir","Se termina la ejecucion",1),
-    Shell("clear",Controller::clear,"clear","Limpia consola",1) 
+    Shell("clear",Controller::clear,"clear","Limpia consola",1),
 };
 
 int main(int argc, char const *argv[]){

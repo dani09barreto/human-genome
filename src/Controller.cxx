@@ -38,17 +38,13 @@ void Controller::ruta_mas_corta (Shell::argv_t argvs, Shell command){
 void Controller::base_remota (Shell::argv_t argvs, Shell command){
     Controller::verificationARGV(argvs, command);
 }
-
 void Controller::verificationARGV(Shell::argv_t argvs, Shell command){
-    if (argvs.size() == 1)
-         throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
-
-    if (argvs[1].compare("help") == 0){
+    if (argvs[1].compare("ayuda") == 0){
         std::cout << "\nComando:\n";
         std::cout << "- " << command.getCommand() <<"\n\t"<< "Uso: "<< command.getCommandUsage() <<"\n\tDescripcion: "<< command.getCommandDescription() << "\n";
-    }
-    else if (argvs.size() != command.getArgc())
-        throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
+    }else if (argvs.size() != command.getArgc())
+         throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
+
 }
 
 void Controller::clear (Shell::argv_t argvs, Shell command){
