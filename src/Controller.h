@@ -1,3 +1,8 @@
+ /* @file main.cpp
+ *  @authors Daniel Barreto, Santiago Gutierrez, Juan Paez
+ *  @brief Proyecto Genoma Humano (Estructuras de datos 2022-3)
+ */
+
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
