@@ -1,4 +1,4 @@
- /* @file main.cpp
+ /* @file Manager.h
  *  @authors Daniel Barreto, Santiago Gutierrez, Juan Paez
  *  @brief Proyecto Genoma Humano (Estructuras de datos 2022-3)
  */
