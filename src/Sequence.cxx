@@ -1,8 +1,7 @@
 #include <iostream>
-#include <Sequence.h>
+#include "Sequence.h"
 
 Sequence::Sequence(){
-    name ="";
 }
 char* Sequence::getName(){
     return(name);
@@ -14,5 +13,4 @@ void Sequence::addBase(char base){
     bases.push_back(base);
 }
 void Sequence::countDifBases(){
-    //Acá seria como el del parcial
 }

@@ -56,6 +56,12 @@ const char* Shell::SyntaxError::error() const noexcept {
         case ERROR_AGV:
             return "Error escritura en comando";
             break;
+        case ERROR_OPEN_FILE:
+            return "no se encuentra o no puede leerse.";
+            break;
+        case EMPTY_FILE:
+            return "no contiene ninguna secuencia.";
+            break;
 
         default:
             return "Comando inválido";

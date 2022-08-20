@@ -49,7 +49,9 @@ class Shell{
         public:
             enum TypeError{
                 COMMAND_DONT_EXIST,
-                ERROR_AGV
+                ERROR_AGV,
+                ERROR_OPEN_FILE,
+                EMPTY_FILE
             };
 
         private:
