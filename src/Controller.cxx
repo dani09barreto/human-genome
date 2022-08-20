@@ -12,12 +12,10 @@
 #include <sstream>
 #include <string>
 std::list<Sequence> sequences;
-int numSequences = 0; // Cantidad de secuencias
+
 void Controller::Cargar(Shell::argv_t argvs, Shell command)
 {
-   
     Controller::verificationARGV(argvs, command);
-
     std::string line;
     std::ifstream inputFile;
     inputFile.open(argvs[1]);
@@ -36,42 +34,59 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     {
         std::cerr << e.what() << '\n';
     }
-
-    
     sequences.clear();
-    std::list<Sequence>::iterator itSeq;
-    itSeq = sequences.begin();
-    char* aux;
-    numSequences = 0;
-    while (getline(inputFile, line))
-    {
-        std::size_t found = line.find(">");
-        if (found != std::string::npos) // Si es una nueva secuencia
-        { 
-           //Esta parte la idea seria que si llega una nueva secuencia
-           //Le sume al iterador para ir agregando en la nueva posición
-           //Sin embargo no sé por que de cualquier forma sale un error
-           //De memoria, ademas sale la lista vacia
+    std::list<Sequence>::iterator itSeq = sequences.begin();
+    
+    for(std::string line; std::getline(inputFile, line);){
+        if (std::string::npos != line.find(">")) {// Si es una nueva secuencia
+            Sequence auxSeq; 
+            auxSeq.setName(line);
+            sequences.push_back(auxSeq);
         }
-        
+        else{
+            std::list<Sequence>::reference ref = sequences.back();
+            for (auto &chr : line){
+                if(chr=='-'){
+                    ref.setComplete(false);
+                }
+                ref.addBase(chr);
+            }
+        }
     }
-    if(numSequences==1){
-        std::cout<<" 1 secuencia cargada correctamente desde "<<argvs[1];
-    } else{
-        std::cout<<numSequences<<" secuencias cargadas correctamente desde "<<argvs[1];
+    //Mostrar por pantalla
+    /*for(auto & temp: sequences)
+    {
+        std::cout << temp.getName()<< '\n';
+        for(auto & temp2: temp.getBases()){
+            std::cout <<"\n"<< temp2;
+        }
+    }*/
+    if (sequences.size() == 1)
+    {
+        std::cout << " 1 secuencia cargada correctamente desde " << argvs[1];
     }
-    inputFile.close();
+    else
+    {
+        std::cout << sequences.size() << " secuencias cargadas correctamente desde " << argvs[1];
+    }
+    // inputFile.close();
+    
 }
 
 void Controller::conteo(Shell::argv_t argvs, Shell command)
 {
     Controller::verificationARGV(argvs, command);
-    if(numSequences==0){
-        std::cout<<"No hay secuencias cargadas en memoria.";
-    } else if(numSequences==1){
-        std::cout<<"1 secuencia en memoria.";
-    }else{
-        std::cout<<numSequences<<" secuencias en memoria.";
+    if (sequences.size() == 0)
+    {
+        std::cout << "No hay secuencias cargadas en memoria.";
+    }
+    else if (sequences.size() == 1)
+    {
+        std::cout << "1 secuencia en memoria.";
+    }
+    else
+    {
+        std::cout << sequences.size() << " secuencias en memoria.";
     }
 }
 void Controller::salir(Shell::argv_t argvs, Shell command)

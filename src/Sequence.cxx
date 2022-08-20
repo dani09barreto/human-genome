@@ -1,14 +1,26 @@
 #include <iostream>
 #include "Sequence.h"
 
+Sequence::Sequence(int numDifBases,bool complete, std::string name){
+    this->numDifBases=numDifBases;
+    this->name = name;
+    this->complete = complete;
+}
 Sequence::Sequence(){
 }
-char* Sequence::getName(){
-    return(name);
+void Sequence::setComplete(bool n_complete){
+    this->complete = complete;
 }
-void Sequence::setName(char* n_name){
+void Sequence::setName(std::string n_name){
     this->name = n_name;
 }
+std::list<char> Sequence::getBases(){
+    return(bases);
+}
+std::string Sequence::getName(){
+    return(name);
+}
+
 void Sequence::addBase(char base){
     bases.push_back(base);
     //std::cout<<bases.back();
