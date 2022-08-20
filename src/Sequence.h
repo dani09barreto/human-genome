@@ -10,6 +10,7 @@ class Sequence {
    void setName(char* n_name);
    void addBase(char base);
    void countDifBases();
+   void emptyListBases();
   protected:
    std::list<char> bases;
    int numDifBases;

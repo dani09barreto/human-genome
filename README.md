@@ -7,5 +7,8 @@ Proyecto relacionado con el ADN y ARN para la materia de Estructuras de Datos
 
 Compilar y generar ejecutable 
 ```sh
+//Compilación
 g++ -std=c++11 -o ejecutable  *.cxx *.cpp
+//Debug
+g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
 ```

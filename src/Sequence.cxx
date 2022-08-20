@@ -11,6 +11,10 @@ void Sequence::setName(char* n_name){
 }
 void Sequence::addBase(char base){
     bases.push_back(base);
+    //std::cout<<bases.back();
+}
+void emptyListBases(){
+    
 }
 void Sequence::countDifBases(){
 }
