@@ -41,33 +41,25 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     sequences.clear();
     std::list<Sequence>::iterator itSeq;
     itSeq = sequences.begin();
-    char* aux = "";
+    char* aux;
     numSequences = 0;
     while (getline(inputFile, line))
     {
         std::size_t found = line.find(">");
         if (found != std::string::npos) // Si es una nueva secuencia
-        {   
-            std::cout<<"SIENCONTRADO\n";
-            itSeq++; // Agregar nueva secuencia
-            strcpy(aux,line.c_str());
-            numSequences++;
-            itSeq -> setName(aux); 
-            std::cout<<"\nOLA"<<sequences.size()<<"TERMINA\n";
-        }
-        else
-        {std::cout<<itSeq->getName();
-            for (int i = 0; i < line.size(); i++)
-            {
-                //std::cout << typeid(line.at(i)).name();
-               
-               
-            }
+        { 
+           //Esta parte la idea seria que si llega una nueva secuencia
+           //Le sume al iterador para ir agregando en la nueva posición
+           //Sin embargo no sé por que de cualquier forma sale un error
+           //De memoria, ademas sale la lista vacia
         }
         
     }
-
-        std::cout<<"\nOLA"<<sequences.size()<<"TERMINA\n";
+    if(numSequences==1){
+        std::cout<<" 1 secuencia cargada correctamente desde "<<argvs[1];
+    } else{
+        std::cout<<numSequences<<" secuencias cargadas correctamente desde "<<argvs[1];
+    }
     inputFile.close();
 }
 

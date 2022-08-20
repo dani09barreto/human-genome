@@ -13,7 +13,7 @@ void Sequence::addBase(char base){
     bases.push_back(base);
     //std::cout<<bases.back();
 }
-void emptyListBases(){
+void Sequence::emptyListBases(){
     
 }
 void Sequence::countDifBases(){
