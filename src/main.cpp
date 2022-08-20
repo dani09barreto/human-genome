@@ -15,7 +15,7 @@ std::vector <Shell> commands = {
     Shell("es_subsecuencia",Controller::es_subsecuencia,"es_subsecuencia <secuencia>","Determina si una secuencia existe dentro de las secuencias cargadas",2), 
     Shell("enmascarar",Controller::enmascarar,"enmascarar <secuencia>","Enmascara una secuencia determinada con el codigo X",2), 
     Shell("guardar",Controller::guardar,"guardar <nombre_archivo>","Guarda en el <nombre_archivo> las secuencias",2), 
-    Shell("codficar",Controller::codificar,"codificar nombre_archivo.fabin","El comando debe generar el archivo binario con la correspondiente codificacion de Huffman",2), 
+    Shell("codificar",Controller::codificar,"codificar nombre_archivo.fabin","El comando debe generar el archivo binario con la correspondiente codificacion de Huffman",2), 
     Shell("decodificar",Controller::decodificar,"decodificar nombre_archivo.fabin","El comando debe cargar en memoria las secuencias contenidas en el archivo binario \n\tnombre_archivo.fabin, que contiene una codificacion Huffman",2), 
     Shell("ruta_mas_corta",Controller::decodificar,"ruta_mas_corta descripcion_secuencia i j x y","imprime en pantalla la secuencia de vertices (bases) del grafo que describen la ruta mas corta \n\tentre la base ubicada en la posicion [i ,j ] de la matriz de la secuenciadescripcion_secuencia y la base ubicada \n\ten la posicion [x ,y ] de la misma matriz",6), 
     Shell("base_remota",Controller::Cargar,"base_remota descripcion_secuencia i j","busca la ubicacion de la misma base (misma letra) mas lejana dentro de la matriz",4),

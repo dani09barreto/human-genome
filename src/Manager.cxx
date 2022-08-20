@@ -30,7 +30,10 @@ void Manager::init(){
         try{
             for (Shell shell : this->commands){
             //Evaluar si el comando existe
-            if (shell.getCommand() == tokens[0]){
+            if(shell.getCommand() == tokens[0]){
+                detected = true;
+                shell.call(tokens, shell);
+            }else if (shell.getCommand() == tokens[1]){
                 detected = true;
                 shell.call(tokens, shell);
             }
@@ -60,6 +63,6 @@ void Manager::commandHelp(){
 
     std::cout << "Comandos:\n\n";
     for (Shell shell : this->commands){//Traer uso y descripción del comando.
-        std::cout << "- " << shell.getCommand() <<"\n\t"<< "Uso: "<< shell.getCommandUsage() <<"\n\tDescripcion: "<< shell.getCommandDescription() << "\n\n";
+        std::cout << "- " << shell.getCommand() <<"\n\t"<< "Uso: "<< shell.getCommandUsage() <<"\n\n";
     }
 }   

@@ -44,7 +44,7 @@ void Controller::base_remota (Shell::argv_t argvs, Shell command){
     Controller::verificationARGV(argvs, command);
 }
 void Controller::verificationARGV(Shell::argv_t argvs, Shell command){
-    if (argvs[1].compare("ayuda") == 0){
+    if (argvs[0].compare("ayuda") == 0){
         std::cout << "\nComando:\n";
         std::cout << "- " << command.getCommand() <<"\n\t"<< "Uso: "<< command.getCommandUsage() <<"\n\tDescripcion: "<< command.getCommandDescription() << "\n";
     }else if (argvs.size() != command.getArgc())
@@ -52,10 +52,6 @@ void Controller::verificationARGV(Shell::argv_t argvs, Shell command){
 
 }
 
-void Controller::clear (Shell::argv_t argvs, Shell command){
-    #ifdef WIN32
-    system("cls");
-    #else 
-    system("clear");
-    #endif
+void Controller::clear (Shell::argv_t argvs, Shell command){    
+    system("cls");   
 }
