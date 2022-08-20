@@ -49,7 +49,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
                 if(chr=='-'){
                     ref.setComplete(false);
                 }
-                ref.addBase(chr);
+                ref.addBase(line);
             }
         }
     }
