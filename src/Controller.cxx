@@ -43,26 +43,17 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     itSeq = sequences.begin();
     char* aux;
     numSequences = 0;
+
     while (getline(inputFile, line))
     {
         std::size_t found = line.find(">");
         if (found != std::string::npos) // Si es una nueva secuencia
         {   
-            std::cout<<"SIENCONTRADO\n";
             itSeq++; // Agregar nueva secuencia
             strcpy(aux,line.c_str());
             numSequences++;
             itSeq -> setName(aux); 
-            std::cout<<"\nOLA"<<sequences.size()<<"TERMINA\n";
-        }
-        else
-        {std::cout<<itSeq->getName();
-            for (int i = 0; i < line.size(); i++)
-            {
-                //std::cout << typeid(line.at(i)).name();
-               
-               
-            }
+            
         }
         
     }
