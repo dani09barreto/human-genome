@@ -49,18 +49,18 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
                 if(chr=='-'){
                     ref.setComplete(false);
                 }
-                ref.addBase(line);
             }
+            ref.addBase(line);
         }
     }
     //Mostrar por pantalla
-    /*for(auto & temp: sequences)
+    for(auto & temp: sequences)
     {
-        std::cout << temp.getName()<< '\n';
+        std::cout <<"\nSecuencia: "<< temp.getName();
         for(auto & temp2: temp.getBases()){
             std::cout <<"\n"<< temp2;
         }
-    }*/
+    }
     if (sequences.size() == 1)
     {
         std::cout << " 1 secuencia cargada correctamente desde " << argvs[1];
