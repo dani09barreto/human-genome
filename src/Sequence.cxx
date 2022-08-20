@@ -14,7 +14,7 @@ void Sequence::setComplete(bool n_complete){
 void Sequence::setName(std::string n_name){
     this->name = n_name;
 }
-std::list<std::string> Sequence::getBases(){
+std::string Sequence::getBases(){
     return(bases);
 }
 std::string Sequence::getName(){
@@ -22,7 +22,7 @@ std::string Sequence::getName(){
 }
 
 void Sequence::addBase(std::string base){
-    bases.push_back(base);
+    //bases+base;
     //std::cout<<bases.back();
 }
 void Sequence::emptyListBases(){

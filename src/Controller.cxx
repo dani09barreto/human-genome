@@ -51,6 +51,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
                 }
             }
             ref.addBase(line);
+            //Plantearse si hacer list de strings, o que todo eso sea un solo string
         }
     }
     //Mostrar por pantalla

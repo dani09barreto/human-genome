@@ -11,11 +11,11 @@ class Sequence {
    void setName(std::string n_name);
    void setComplete(bool n_complete);
    void addBase(std::string base);
-   std::list<std::string> getBases();
+   std::string getBases();
    void countDifBases();
    void emptyListBases();
   protected:
-   std::list<std::string> bases;
+   std::string bases;
    int numDifBases;
    std::string name;
    bool complete;
