@@ -45,7 +45,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
         }
         else{
             std::list<Sequence>::reference ref = sequences.back();
-            for (auto &chr : line){
+            for (char &chr : line){
                 if(chr=='-'){
                     ref.setComplete(false);
                 }
@@ -54,10 +54,10 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
         }
     }
     //Mostrar por pantalla
-    for(auto & temp: sequences)
+    for(Sequence & temp: sequences)
     {
         std::cout <<"\nSecuencia: "<< temp.getName();
-        for(auto & temp2: temp.getBases()){
+        for(std::string & temp2: temp.getBases()){
             std::cout <<"\n"<< temp2;
         }
     }
