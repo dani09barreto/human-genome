@@ -45,21 +45,12 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
         }
         else{
             std::list<Sequence>::reference ref = sequences.back();
-            for (auto &chr : line){
+            for (char &chr : line){
                 if(chr=='-'){
                     ref.setComplete(false);
                 }
             }
-            ref.addBase(line);
-            //Plantearse si hacer list de strings, o que todo eso sea un solo string
-        }
-    }
-    //Mostrar por pantalla
-    for(auto & temp: sequences)
-    {
-        std::cout <<"\nSecuencia: "<< temp.getName();
-        for(auto & temp2: temp.getBases()){
-            std::cout <<"\n"<< temp2;
+            ref.addLine(line);
         }
     }
     if (sequences.size() == 1)
