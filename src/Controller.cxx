@@ -45,11 +45,6 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
         }
         else{
             std::list<Sequence>::reference ref = sequences.back();
-            for (char &chr : line){
-                if(chr=='-'){
-                    ref.setComplete(false);
-                }
-            }
             ref.addLine(line);
         }
     }
@@ -94,6 +89,20 @@ void Controller::salir(Shell::argv_t argvs, Shell command)
 void Controller::listar_secuencias(Shell::argv_t argvs, Shell command)
 {
     Controller::verificationARGV(argvs, command);
+    std::list<Sequence>::iterator itSeq = sequences.begin();
+    std::string auxName = "";
+    if(sequences.empty()){
+        std::cout<<"No hay secuencias cargadas en memoria.";
+    } else{
+        for(;itSeq!=sequences.end();itSeq++){
+            auxName = (*itSeq).getName().erase(0,1);
+            if((*itSeq).getComplete()){
+                std::cout<<"Secuencia "<<auxName<<" contiene "<<(*itSeq).countDifBases()<<" bases.\n";
+            }else{
+                std::cout<<"Secuencia "<<auxName<<" contiene al menos " <<(*itSeq).countDifBases()<<" bases.\n";
+            }
+        }
+    }
 }
 void Controller::histograma(Shell::argv_t argvs, Shell command)
 {

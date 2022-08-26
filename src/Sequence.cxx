@@ -13,7 +13,11 @@ Sequence::Sequence()
 }
 void Sequence::setComplete(bool n_complete)
 {
-    this->complete = complete;
+    this->complete = n_complete;
+}
+bool Sequence::getComplete()
+{
+    return complete;
 }
 void Sequence::setName(std::string n_name)
 {
@@ -29,7 +33,10 @@ std::string Sequence::getName()
 }
 
 void Sequence::addLine(std::string n_line)
-{
+{   
+    if (n_line.find('-') != std::string::npos){
+        setComplete(false);
+    }
     basesConcat = basesConcat + n_line; // Agregarlo al string largo
     Line newLine;
     newLine.setLenght(n_line.size());
@@ -74,7 +81,7 @@ void Sequence::updatecountBases()
         countBases.push_back(aux);
     }
     
-    
+   // countDifBases();
 }
 void Sequence::printCountBases(){
 for (int i = 0; i < countBases.size(); i++)
@@ -82,7 +89,12 @@ for (int i = 0; i < countBases.size(); i++)
         std::cout << nitrogens.at(i) <<" : "<< countBases.at(i) << "\n";
     }
 }
-void Sequence::countDifBases()
-{
-    
+int Sequence::countDifBases()
+{   int countDif = 0;
+    for(int i=0;i<countBases.size();i++){
+        if(countBases.at(i)!=0){
+            countDif++;
+        }
+    }
+    return countDif;
 }
