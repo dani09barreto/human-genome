@@ -62,7 +62,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     {
         std::cout << " 1 secuencia cargada correctamente desde " << argvs[1];
     }
-    else
+    else if(sequences.size()>1)
     {
         std::cout << sequences.size() << " secuencias cargadas correctamente desde " << argvs[1];
     }
