@@ -33,6 +33,7 @@ public:
   void emptyListBases();
   int countDifBases();
   void updateStruct();
+  void setBasesConcat(std::string basesConcat);
   
   
   // std::string setBasesConcat(std::string n_bases);

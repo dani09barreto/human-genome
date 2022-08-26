@@ -57,11 +57,11 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     
     if (sequences.size() == 1)
     {
-        std::cout << " 1 secuencia cargada correctamente desde " << argvs[1];
+        std::cout << " 1 secuencia cargada correctamente desde " << argvs[1] << std::endl;
     }
     else if(sequences.size()>1)
     {
-        std::cout << sequences.size() << " secuencias cargadas correctamente desde " << argvs[1];
+        std::cout << sequences.size() << " secuencias cargadas correctamente desde " << argvs[1] << std::endl;
     }
     // inputFile.close();
     
@@ -74,15 +74,15 @@ void Controller::conteo(Shell::argv_t argvs, Shell command)
     }
     if (sequences.size() == 0)
     {
-        std::cout << "No hay secuencias cargadas en memoria.";
+        std::cout << "No hay secuencias cargadas en memoria."<<std::endl;
     }
     else if (sequences.size() == 1)
     {
-        std::cout << "1 secuencia en memoria.";
+        std::cout << "1 secuencia en memoria."<<std::endl;
     }
     else
     {
-        std::cout << sequences.size() << " secuencias en memoria.";
+        std::cout << sequences.size() << " secuencias en memoria."<<std::endl;
     }
 }
 void Controller::salir(Shell::argv_t argvs, Shell command)
@@ -98,7 +98,7 @@ void Controller::listar_secuencias(Shell::argv_t argvs, Shell command)
     std::list<Sequence>::iterator itSeq = sequences.begin();
     std::string auxName = "";
     if(sequences.empty()){
-        std::cout<<"No hay secuencias cargadas en memoria.";
+        std::cout<<"No hay secuencias cargadas en memoria."<<std::endl;
     } else{
         for(;itSeq!=sequences.end();itSeq++){
             auxName = (*itSeq).getName().erase(0,1);
@@ -136,15 +136,35 @@ void Controller::histograma(Shell::argv_t argvs, Shell command)
     }
     
 }
+
 void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command)
 {
     
     if (Controller::verificationARGV(argvs, command) > 0){
         return;
     }
-    std::string subSequencie = argvs[1];
+    if (sequences.size() == 0){
+        std::cout << "No hay secuencias cargadas en memoria"<<std::endl;
+        return;
+    }
 
-    
+    std::string subSequencie = argvs[1];
+    int nSecuencias = 0;
+
+    for (Sequence sec : sequences){
+        std::string sequence = sec.getBasesConcat();
+        int found = -1;
+        do{
+            found = sequence.find(subSequencie, found + 1);
+            if (found != -1)
+                nSecuencias ++;
+
+        }while (found != -1);
+    }
+    if (nSecuencias == 0)
+        std::cout << "La secuencia dada no existe."<< std::endl;
+    else
+        std::cout << "La secuencia dada se repite " << nSecuencias << " veces" << std::endl;
 
 }
 void Controller::enmascarar(Shell::argv_t argvs, Shell command)
@@ -152,6 +172,40 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command)
     if (Controller::verificationARGV(argvs, command) > 0){
         return;
     }
+    
+    if (sequences.size() == 0){
+        std::cout << "No hay secuencias cargadas en memoria"<<std::endl;
+        return;
+    }
+    int nSecuencias = 0;
+    std::string subSequencie = argvs[1];
+    std::list<Sequence>::iterator itSeq = sequences.begin();
+
+    for (; itSeq != sequences.end(); itSeq ++){
+        std::string sequence = (*itSeq).getBasesConcat();
+        int found = -1;
+        do{
+            found = sequence.find(subSequencie, found + 1);
+            if (found != -1)
+                nSecuencias ++;
+
+            for (int i = found; i < found + subSequencie.size(); i ++){
+                sequence.at(i) = 'X';
+            }
+        }while (found != -1);
+        (*itSeq).setBasesConcat(sequence);
+        itSeq->updateStruct();
+    }
+
+    if (nSecuencias == 0){
+        std::cout << "La secuencia dada no existe."<< std::endl;
+        return;
+    }
+    if (nSecuencias == 1){
+        std::cout << "1 secuencia ha sido enmascarada."<< std::endl;
+        return;
+    }
+    std::cout  << nSecuencias << " secuencias han sido enmascaradas" << std::endl;
 }
 void Controller::guardar(Shell::argv_t argvs, Shell command)
 {
