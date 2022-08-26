@@ -53,6 +53,11 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
             ref.addLine(line);
         }
     }
+    itSeq = sequences.begin();
+    for(;itSeq!=sequences.end();itSeq++){
+        (*itSeq).updatecountBases();
+    }
+    
     if (sequences.size() == 1)
     {
         std::cout << " 1 secuencia cargada correctamente desde " << argvs[1];
@@ -93,6 +98,26 @@ void Controller::listar_secuencias(Shell::argv_t argvs, Shell command)
 void Controller::histograma(Shell::argv_t argvs, Shell command)
 {
     Controller::verificationARGV(argvs, command);
+    std::string auxNameSeq = ">"+argvs[1];
+    std::list<Sequence>::iterator itS = sequences.begin();
+    //std::cout<<auxNameSeq;
+    bool find = false;
+    for(;itS!=sequences.end();itS++){
+        if((*itS).getName()==auxNameSeq){
+            find = true;
+            break;
+        }
+    }
+    //sequences.front().countDifBases();
+    if(sequences.empty()){
+        std::cout<<"No hay secuencias cargadas en memoria.";
+    }else if(find){
+        (*itS).printCountBases();
+
+    }else{
+        std::cout<<"Secuencia invalida.";
+    }
+    
 }
 void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command)
 {

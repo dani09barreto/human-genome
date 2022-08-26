@@ -2,29 +2,37 @@
 #define __SEQUENCE__H__
 
 #include <list>
+#include <vector>
 #include "Line.h"
 
 class Sequence
 {
-  protected:
-    std::list<Line> bases; 
-    int numDifBases;
-    std::string name;
-    std::string basesConcat;
-    bool complete;
+protected:
+  std::list<Line> bases;
+  const std::vector<char> nitrogens = {'A', 'C', 'G', 'T', 'U', 'R',
+                                       'Y', 'K', 'M', 'S', 'W', 'B',
+                                       'D', 'H', 'V', 'N', 'X', '-'};
+  int numDifBases;
+  std::vector<int> countBases; // Lista paralela a las posibles bases
+  std::string name;
+  std::string basesConcat;
+  bool complete;
 
-  public:
-    Sequence(int numDifBases, bool complete, std::string name);
-    Sequence();
-    std::string getName();
-    void setName(std::string n_name);
-    void setComplete(bool n_complete);
-    void addLine(std::string n_line);
-    std::list<Line> getBases();
-    void countDifBases();
-    void emptyListBases();
-    std::string getBasesConcat();
-    //std::string setBasesConcat(std::string n_bases);
+public:
+  Sequence(int numDifBases, bool complete, std::string name);
+  Sequence();
+  std::string getName();
+  void setName(std::string n_name);
+  void setComplete(bool n_complete);
+  void addLine(std::string n_line);
+  std::list<Line> getBases();
+  void countDifBases();
+  void updatecountBases();
+  void emptyListBases();
+  void printCountBases();
+  std::string getBasesConcat();
+  void updateStruct();
+  // std::string setBasesConcat(std::string n_bases);
 };
 
 #endif //__SEQUENCE__H__
