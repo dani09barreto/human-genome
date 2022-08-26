@@ -15,7 +15,9 @@ std::list<Sequence> sequences;
 
 void Controller::Cargar(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
     std::string line;
     std::ifstream inputFile;
     inputFile.open(argvs[1]);
@@ -67,7 +69,9 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
 
 void Controller::conteo(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
     if (sequences.size() == 0)
     {
         std::cout << "No hay secuencias cargadas en memoria.";
@@ -88,7 +92,9 @@ void Controller::salir(Shell::argv_t argvs, Shell command)
 }
 void Controller::listar_secuencias(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
     std::list<Sequence>::iterator itSeq = sequences.begin();
     std::string auxName = "";
     if(sequences.empty()){
@@ -106,7 +112,9 @@ void Controller::listar_secuencias(Shell::argv_t argvs, Shell command)
 }
 void Controller::histograma(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
     std::string auxNameSeq = ">"+argvs[1];
     std::list<Sequence>::iterator itS = sequences.begin();
     //std::cout<<auxNameSeq;
@@ -130,49 +138,72 @@ void Controller::histograma(Shell::argv_t argvs, Shell command)
 }
 void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
+    std::string subSequencie = argvs[1];
+
+    
+
 }
 void Controller::enmascarar(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
 }
 void Controller::guardar(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
 }
 void Controller::codificar(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
 }
 void Controller::decodificar(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
 }
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
 }
 void Controller::base_remota(Shell::argv_t argvs, Shell command)
 {
-    Controller::verificationARGV(argvs, command);
+    if (Controller::verificationARGV(argvs, command) > 0){
+        return;
+    }
 }
-void Controller::verificationARGV(Shell::argv_t argvs, Shell command)
+int Controller::verificationARGV(Shell::argv_t argvs, Shell command)
 {
-    if (argvs[0].compare("ayuda") == 0)
+    if (argvs[0].compare("ayuda") == 0 && argvs.size() == 2)
     {
         std::cout << "\nComando:\n";
         std::cout << "- " << command.getCommand() << "\n\t"
                   << "Uso: " << command.getCommandUsage() << "\n\tDescripcion: " << command.getCommandDescription() << "\n";
+        return 1;
     }
-    else if (argvs.size() != command.getArgc())
+    else if (argvs.size() != command.getArgc()){
         throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
+        return 2;
+    }
+    return 0;
 }
 
 void Controller::clear(Shell::argv_t argvs, Shell command)
 {
-#ifdef WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
+    #ifdef WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
 }
