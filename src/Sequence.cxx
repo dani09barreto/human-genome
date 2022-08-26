@@ -32,6 +32,10 @@ std::string Sequence::getName()
     return (name);
 }
 
+void Sequence::setBasesConcat(std::string n_basesConcat){
+    this->basesConcat = n_basesConcat;
+}
+
 void Sequence::addLine(std::string n_line)
 {   
     if (n_line.find('-') != std::string::npos){
@@ -48,7 +52,7 @@ void Sequence::emptyListBases()
 }
 std::string Sequence::getBasesConcat()
 {
-    return basesConcat;
+    return this->basesConcat;
 }
 void Sequence::updateStruct()
 {
@@ -57,15 +61,17 @@ void Sequence::updateStruct()
     std::string auxS = "";
     int j = 0;
     for (; itL != bases.end(); itL++)
-    {                                   // Recorrer lista de lineas
+    {    
+        auxS="";                      // Recorrer lista de lineas
         auxLenght = (*itL).getLenght(); // Traer el tamaño
         for (int i = 0; i < auxLenght; i++)
         { // Dependiendo el tamaño itera
-            auxS = auxS + basesConcat.at(j);
+            auxS = auxS + this->basesConcat.at(j);
             j++; // Guardar la posición en la que va el string largo
         }
         (*itL).setLine(auxS);
     }
+    
     updatecountBases();
 }
 void Sequence::updatecountBases()

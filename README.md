@@ -13,4 +13,7 @@ cd src/
 g++ -std=c++11 -o ejecutable  *.cxx *.cpp
 //Debug
 g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
+
+cargar ArchivosPrueba/test_genome.fa
+es_subsecuencia a
 ```
