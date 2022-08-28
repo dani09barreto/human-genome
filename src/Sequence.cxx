@@ -76,6 +76,7 @@ void Sequence::updateStruct()
 }
 void Sequence::updatecountBases()
 {   int aux=0;
+    countBases.clear();
     for (int i =0; i<nitrogens.size();i++)
     {   aux = 0;
         for (int j = 0; j < basesConcat.size(); j++)
@@ -87,7 +88,7 @@ void Sequence::updatecountBases()
         countBases.push_back(aux);
     }
     
-   // countDifBases();
+   countDifBases();
 }
 void Sequence::printCountBases(){
 for (int i = 0; i < countBases.size(); i++)
