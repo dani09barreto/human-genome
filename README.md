@@ -6,14 +6,22 @@ Proyecto relacionado con el ADN y ARN para la materia de Estructuras de Datos
 - Juan Páez
 
 Compilar y generar ejecutable 
-```sh
-//Mover al directorio src para ejecutar el código
-cd src/
-//Compilación
-g++ -std=c++11 -o ejecutable  *.cxx *.cpp
-//Debug
-g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
 
+//Mover al directorio src para ejecutar el código
+```sh
+cd src/
+```
+//Compilación
+```sh
+g++ -std=c++11 -o ejecutable  *.cxx *.cpp
+```
+//Debug
+```sh
+g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
+```
+```sh
 cargar ArchivosPrueba/test_genome.fa
+```
+```sh
 es_subsecuencia a
 ```
