@@ -226,6 +226,7 @@ void Controller::guardar(Shell::argv_t argvs, Shell command)
                     outFile<<line.getLine()<<"\n";
                 }
             }
+            std::cout<<"Las secuencias han sido guardadas en "<<argvs[1]<<".fa"<<std::endl;
 
         }catch(std:: exception e){
             std::cout<<"Error guardando en "<<argvs[1]<<std::endl;
