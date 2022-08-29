@@ -88,7 +88,7 @@ void Sequence::updatecountBases()
         countBases.push_back(aux);
     }
     
-   countDifBases();
+   //countDifBases();
 }
 void Sequence::printCountBases(){
 for (int i = 0; i < countBases.size(); i++)
@@ -99,7 +99,7 @@ for (int i = 0; i < countBases.size(); i++)
 int Sequence::countDifBases()
 {   int countDif = 0;
     for(int i=0;i<countBases.size();i++){
-        if(countBases.at(i)!=0){
+        if(countBases.at(i)!=0 && nitrogens.at(i) != 'X' && nitrogens.at(i) != '-'){
             countDif++;
         }
     }
