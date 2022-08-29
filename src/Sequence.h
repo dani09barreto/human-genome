@@ -11,7 +11,7 @@ protected:
   std::list<Line> bases;
   const std::vector<char> nitrogens = {'A', 'C', 'G', 'T', 'U', 'R',
                                        'Y', 'K', 'M', 'S', 'W', 'B',
-                                       'D', 'H', 'V', 'N', 'X'};
+                                       'D', 'H', 'V', 'N', 'X','-'};
   int numDifBases;
   std::vector<int> countBases; // Lista paralela a las posibles bases
   std::string name;
