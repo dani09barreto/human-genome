@@ -212,6 +212,25 @@ void Controller::guardar(Shell::argv_t argvs, Shell command)
     if (Controller::verificationARGV(argvs, command) > 0){
         return;
     }
+
+    if(sequences.size()==0){
+        std::cout<<" No hay secuencias cargadas en memoria"<<std::endl;
+        return;
+    }
+        try{        
+            std :: fstream outFile;
+            outFile.open(argvs[1]+".fa" , std::ios::out);
+            for(Sequence sec : sequences){
+                outFile << sec.getName()<<"\n";
+                for(Line line: sec.getBases()){
+                    outFile<<line.getLine()<<"\n";
+                }
+            }
+
+        }catch(std:: exception e){
+            std::cout<<"Error guardando en "<<argvs[1]<<std::endl;
+        }
+    
 }
 void Controller::codificar(Shell::argv_t argvs, Shell command)
 {
