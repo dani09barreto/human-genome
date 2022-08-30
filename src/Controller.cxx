@@ -157,7 +157,7 @@ void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command)
         std::string sequence = sec.getBasesConcat();
         int found = -1;
         do{
-            found = sequence.find(subSequencie, found + 1);
+            found = sequence.find(subSequencie, found + argvs[1].size());
             if (found != -1)
                 nSecuencias ++;
 
@@ -187,7 +187,7 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command)
         std::string sequence = (*itSeq).getBasesConcat();
         int found = -1;
         do{
-            found = sequence.find(subSequencie, found + 1);
+            found = sequence.find(subSequencie, found + argvs[1].size());
             if (found != -1)
                 nSecuencias ++;
 
