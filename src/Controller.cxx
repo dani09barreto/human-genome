@@ -115,6 +115,11 @@ void Controller::histograma(Shell::argv_t argvs, Shell command)
     if (Controller::verificationARGV(argvs, command) > 0){
         return;
     }
+    if(sequences.empty()){
+        std::cout<<"No hay secuencias cargadas en memoria.";
+        return;
+    }
+    
     std::string auxNameSeq = ">"+argvs[1];
     std::list<Sequence>::iterator itS = sequences.begin();
     //std::cout<<auxNameSeq;
@@ -126,11 +131,8 @@ void Controller::histograma(Shell::argv_t argvs, Shell command)
         }
     }
     //sequences.front().countDifBases();
-    if(sequences.empty()){
-        std::cout<<"No hay secuencias cargadas en memoria.";
-    }else if(find){
+    if(find){
         (*itS).printCountBases();
-
     }else{
         std::cout<<"Secuencia invalida.";
     }
