@@ -155,7 +155,7 @@ void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command)
 
     for (Sequence sec : sequences){
         std::string sequence = sec.getBasesConcat();
-        int found = -1;
+        int found = -argvs[1].size();
         do{
             found = sequence.find(subSequencie, found + argvs[1].size());
             if (found != -1)
