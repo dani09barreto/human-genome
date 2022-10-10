@@ -105,3 +105,12 @@ int Sequence::countDifBases()
     }
     return countDif;
 }
+//--------------------------------------------------------------------------------
+//--------------------------SEGUNDA ENTREGA---------------------------------------
+//--------------------------------------------------------------------------------
+  std::vector<int>Sequence::getVecFrequencies(){
+    return countBases;
+  }
+  std::vector<char> Sequence::getNitrogens(){
+    return nitrogens;
+  }

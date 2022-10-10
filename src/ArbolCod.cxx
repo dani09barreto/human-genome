@@ -9,52 +9,65 @@ GeeksForGeeks.
 https://www.geeksforgeeks.org/huffman-coding-using-priority-queue/
 
 */
-ArbolCod::ArbolCod() {
+ArbolCod::ArbolCod()
+{
 	this->raiz = nullptr;
 }
-ArbolCod::~ArbolCod() {
-	if (this->raiz != nullptr) {
+ArbolCod::~ArbolCod()
+{
+	if (this->raiz != nullptr)
+	{
 		delete this->raiz;
 		this->raiz = nullptr;
 	}
 }
-ArbolCod::ArbolCod(int freq, char letra) {
+ArbolCod::ArbolCod(int freq, char letra)
+{
 	this->raiz->fijarFreqLetra(freq, letra);
 }
-NodoCod *ArbolCod::obtenerRaiz() {
+NodoCod *ArbolCod::obtenerRaiz()
+{
 	return this->raiz;
 }
-void ArbolCod::fijarRaiz(NodoCod *n_raiz) {
+void ArbolCod::fijarRaiz(NodoCod *n_raiz)
+{
 	this->raiz = n_raiz;
 }
-bool ArbolCod::esVacio() {
+bool ArbolCod::esVacio()
+{
 	return this->raiz == nullptr;
 }
-void ArbolCod::inOrden() {
-	if (!this->esVacio()) {
+void ArbolCod::inOrden()
+{
+	if (!this->esVacio())
+	{
 		(this->raiz)->inOrden();
 	}
 }
-void ArbolCod::preOrden() {
-	if (!this->esVacio()) {
+void ArbolCod::preOrden()
+{
+	if (!this->esVacio())
+	{
 		(this->raiz)->preOrden();
 	}
 }
 NodoCod *ArbolCod::generarArbol(
-	std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq) {
+	std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq)
+{
 	// Hasta que quede un solo valor en la cola
 
-	while (pq.size() != 1) {
+	while (pq.size() != 1)
+	{
 		NodoCod *izq = pq.top(); // Obtener el primer menor de la lista
 		pq.pop();				 // Sacarlo de la cola
 
 		NodoCod *der = pq.top(); // Obtener el segundo menor de la lista
 		pq.pop();				 // Sacarlo de la cola
-
 		// Generar el nuevo nodo con la suma de las
 		// frecuencias, poniendole como caracter el
 		// $, teniendo en cuenta que es un nodo
 		// intermedio
+
 		NodoCod *nodo =
 			new NodoCod(izq->obtenerFreq() + der->obtenerFreq(), '$');
 
@@ -69,27 +82,36 @@ NodoCod *ArbolCod::generarArbol(
 }
 void ArbolCod::generarPQParaArbol(
 	std::vector<char> letras,
-	std::vector<int> freq) {
+	std::vector<int> freq)
+{
 	// Generar el monticulo minimo a apartir del adapatador priority queue
 	std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq;
-	for (int i = 0; i < letras.size(); i++) {
-		NodoCod *n_nodo = new NodoCod(freq.at(i), letras.at(i));
-		pq.push(n_nodo);
+	for (int i = 0; i < letras.size(); i++)
+	{
+		if (freq.at(i) != 0)
+		{
+			NodoCod *n_nodo = new NodoCod(freq.at(i), letras.at(i));
+			pq.push(n_nodo);
+		}
 	}
 	raiz = generarArbol(pq);
 	generarCodigos(raiz, "");
 }
-void ArbolCod::generarCodigos(NodoCod *root, std::string str) {
-	if (root == nullptr) {
+void ArbolCod::generarCodigos(NodoCod *root, std::string str)
+{
+	if (root == nullptr)
+	{
 		return;
 	}
 
-	if (root->obtenerLetra() != '$') {
-		codigos.push_back(str);
+	if (root->obtenerLetra() != '$')
+	{
+		codigos.insert(codigos.begin(), str);
 	}
 	this->generarCodigos(root->obtenerHijoIzq(), str + "0");
 	this->generarCodigos(root->obtenerHijoDer(), str + "1");
 }
-std::vector<std::string> ArbolCod::obtenerCodigos() {
+std::vector<std::string> ArbolCod::obtenerCodigos()
+{
 	return this->codigos;
 }

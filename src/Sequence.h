@@ -25,6 +25,8 @@ public:
   void setName(std::string n_name);
   void setComplete(bool n_complete);
   void addLine(std::string n_line);
+  std::vector<int> getVecFrequencies();
+  std::vector<char> getNitrogens();
   std::string getBasesConcat();
   std::list<Line> getBases();
   bool getComplete();

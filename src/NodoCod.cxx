@@ -50,7 +50,7 @@ void NodoCod::inOrden() {
 		(this->hijoDer)->inOrden();
 }
 void NodoCod::preOrden() {
-	std::cout << this->freq << this->letra << " ";
+	std::cout << this->freq << this->letra << "\n";
 	if (this->hijoIzq != nullptr)
 		(this->hijoIzq)->preOrden();
 	if (this->hijoDer != nullptr)

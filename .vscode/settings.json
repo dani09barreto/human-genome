@@ -47,6 +47,9 @@
         "sstream": "cpp",
         "list": "cpp",
         "fstream": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "optional": "cpp",
+        "cinttypes": "cpp",
+        "map": "cpp"
     }
 }

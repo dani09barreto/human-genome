@@ -10,7 +10,7 @@
 
 class Controller{
 
-    /*----Metodos (funciones que ejecuta el shell)----*/
+    /*----Metodos (comando que ejecuta el shell)----*/
     public:
     static void Cargar (Shell::argv_t argvs, Shell command);
     static void conteo (Shell::argv_t argvs, Shell command);
@@ -26,6 +26,8 @@ class Controller{
     static void salir (Shell::argv_t argvs, Shell command);
     static int verificationARGV (Shell::argv_t argvs, Shell command);
     static void clear (Shell::argv_t argvs, Shell command);
+    //Funciones auxiliares
+  
 };
 
 #endif
