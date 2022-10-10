@@ -288,6 +288,7 @@ void Controller::codificar(Shell::argv_t argvs, Shell command)
     arbolCod->generarPQParaArbol(letters, frequencies);
 
     // Copiar map de codigos con su respectiva letra
+    keyCodes.clear();
     keyCodes = arbolCod->obtenerCodigos();
 
     std::map<char, std::string>::iterator it;
