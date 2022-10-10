@@ -27,7 +27,7 @@ class Controller{
     static int verificationARGV (Shell::argv_t argvs, Shell command);
     static void clear (Shell::argv_t argvs, Shell command);
     //Funciones segunda entrega
-    static void updateCodigos();
+    static void updateFreq();
     
 };
 

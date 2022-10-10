@@ -65,7 +65,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
             ref.addLine(line);
         }
     }
-    updateCodigos();
+    updateFreq();
     if (sequences.size() == 1)
     {
         std::cout << "1 secuencia cargada correctamente desde " << argvs[1] << std::endl;
@@ -229,7 +229,7 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command)
         (*itSeq).setBasesConcat(sequence);
         itSeq->updateStruct();
     }
-    updateCodigos();
+    updateFreq();
     if (nSecuencias == 0)
     {
         std::cout << "La secuencia dada no existe." << std::endl;
@@ -346,7 +346,7 @@ void Controller::clear(Shell::argv_t argvs, Shell command)
 #endif
 }
 // Funciones auxiliares segunda entrega
-void Controller::updateCodigos()
+void Controller::updateFreq()
 { 
     frequencies.clear();
     frequencies.assign(18, 0);
