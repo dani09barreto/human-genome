@@ -20,7 +20,7 @@ std::vector<int> frequencies;
 std::vector<char> letters = {'A', 'C', 'G', 'T', 'U', 'R',
                              'Y', 'K', 'M', 'S', 'W', 'B',
                              'D', 'H', 'V', 'N', 'X', '-'};
-// std::map<char, int> frequencies;
+std::map<char, std::string> keyCodes;
 
 void Controller::Cargar(Shell::argv_t argvs, Shell command)
 {
@@ -46,9 +46,12 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     {
         std::cerr << e.what() << '\n';
     }
+    //Reiniciar estructuras
     sequences.clear();
     frequencies.clear();
     frequencies.assign(18, 0);
+    keyCodes.clear();
+
     std::list<Sequence>::iterator itSeq = sequences.begin();
 
     for (std::string line; std::getline(inputFile, line);)
@@ -302,14 +305,16 @@ void Controller::codificar(Shell::argv_t argvs, Shell command)
     }*/
     ArbolCod *arbolCod = new ArbolCod();
     arbolCod->generarPQParaArbol(letters, frequencies);
-    
-    std::map<char, std::string> auxCodigos = arbolCod->obtenerCodigos();
+
+    // Copiar map de codigos con su respectiva letra
+    keyCodes = arbolCod->obtenerCodigos();
+
     std::map<char, std::string>::iterator it;
-    for (it = auxCodigos.begin(); it != auxCodigos.end(); it++)
+    for (it = keyCodes.begin(); it != keyCodes.end(); it++)
     {
-        std::cout << it->first // string (key)
+        std::cout << it->first // char con la letra (key)
                   << ':'
-                  << it->second // string's value
+                  << it->second // string con el codigo
                   << std::endl;
     }
 }
