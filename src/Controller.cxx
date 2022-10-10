@@ -15,7 +15,6 @@
 #include <sstream>
 #include <string>
 
-
 std::list<Sequence> sequences;
 std::vector<int> frequencies;
 std::vector<char> letters = {'A', 'C', 'G', 'T', 'U', 'R',
@@ -66,7 +65,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
             ref.addLine(line);
         }
     }
-    //std::vector<char> letters;
+    // std::vector<char> letters;
     std::vector<int> freq;
     int auxCount = 0;
     itSeq = sequences.begin();
@@ -302,10 +301,16 @@ void Controller::codificar(Shell::argv_t argvs, Shell command)
         return;
     }*/
     ArbolCod *arbolCod = new ArbolCod();
-    arbolCod->generarPQParaArbol(letters,frequencies);
-    std::vector<std::string> auxCodigos = arbolCod->obtenerCodigos();
-    for(int i =0; i< auxCodigos.size();i++){
-        std::cout<<letters.at(i)<<" "<<auxCodigos.at(i)<<"\n";
+    arbolCod->generarPQParaArbol(letters, frequencies);
+    
+    std::map<char, std::string> auxCodigos = arbolCod->obtenerCodigos();
+    std::map<char, std::string>::iterator it;
+    for (it = auxCodigos.begin(); it != auxCodigos.end(); it++)
+    {
+        std::cout << it->first // string (key)
+                  << ':'
+                  << it->second // string's value
+                  << std::endl;
     }
 }
 void Controller::decodificar(Shell::argv_t argvs, Shell command)

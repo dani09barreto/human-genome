@@ -1,5 +1,4 @@
 #include "ArbolCod.h"
-#include <queue>
 /*
 Todo el código de la generación del arbol de Huffman
 y la generación de los códigos está basado en la
@@ -90,6 +89,7 @@ void ArbolCod::generarPQParaArbol(
 	{
 		if (freq.at(i) != 0)
 		{
+			//Si la frecuencia es diferente a cero, se agregar en el arbol
 			NodoCod *n_nodo = new NodoCod(freq.at(i), letras.at(i));
 			pq.push(n_nodo);
 		}
@@ -106,12 +106,12 @@ void ArbolCod::generarCodigos(NodoCod *root, std::string str)
 
 	if (root->obtenerLetra() != '$')
 	{
-		codigos.insert(codigos.begin(), str);
+		codigos.insert({root->obtenerLetra(),str});
 	}
 	this->generarCodigos(root->obtenerHijoIzq(), str + "0");
 	this->generarCodigos(root->obtenerHijoDer(), str + "1");
 }
-std::vector<std::string> ArbolCod::obtenerCodigos()
+std::map<char,std::string> ArbolCod::obtenerCodigos()
 {
 	return this->codigos;
 }

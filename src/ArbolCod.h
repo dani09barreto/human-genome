@@ -4,10 +4,11 @@
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <map>
 class ArbolCod {
 protected:
 	NodoCod *raiz;
-	std::vector<std::string> codigos;
+	std::map<char,std::string> codigos;
 
 public:
 	ArbolCod();
@@ -21,7 +22,7 @@ public:
 	void inOrden();
 	void posOrden();
 	void nivelOrden();
-    std::vector<std::string> obtenerCodigos();
+    std::map<char,std::string> obtenerCodigos();
 	NodoCod *generarArbol(
 		std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq);
 	void generarPQParaArbol(std::vector<char> letras, std::vector<int> freq);
