@@ -229,12 +229,13 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command)
         (*itSeq).setBasesConcat(sequence);
         itSeq->updateStruct();
     }
-    updateFreq();
+    
     if (nSecuencias == 0)
     {
         std::cout << "La secuencia dada no existe." << std::endl;
         return;
     }
+    updateFreq();
     if (nSecuencias == 1)
     {
         std::cout << "1 secuencia ha sido enmascarada." << std::endl;
