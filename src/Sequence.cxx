@@ -72,7 +72,7 @@ void Sequence::updateStruct()
         (*itL).setLine(auxS);
     }
     
-    updatecountBases();
+    //updatecountBases();
 }
 void Sequence::updatecountBases()
 {   int aux=0;

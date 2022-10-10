@@ -46,11 +46,8 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
     {
         std::cerr << e.what() << '\n';
     }
-    //Reiniciar estructuras
+    // Reiniciar estructuras
     sequences.clear();
-    frequencies.clear();
-    frequencies.assign(18, 0);
-    keyCodes.clear();
 
     std::list<Sequence>::iterator itSeq = sequences.begin();
 
@@ -68,22 +65,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command)
             ref.addLine(line);
         }
     }
-    // std::vector<char> letters;
-    std::vector<int> freq;
-    int auxCount = 0;
-    itSeq = sequences.begin();
-    for (int i = 0; itSeq != sequences.end(); itSeq++, i++)
-    {
-        (*itSeq).updatecountBases();
-        // letters = (*itSeq).getNitrogens();
-        freq = (*itSeq).getVecFrequencies();
-
-        for (int i = 0; i < frequencies.size(); i++)
-        {
-            // Frecuencias en su letra sumele la frecuencia de la secuencia
-            frequencies.at(i) = frequencies.at(i) + freq.at(i);
-        }
-    }
+    updateCodigos();
     if (sequences.size() == 1)
     {
         std::cout << "1 secuencia cargada correctamente desde " << argvs[1] << std::endl;
@@ -171,7 +153,6 @@ void Controller::histograma(Shell::argv_t argvs, Shell command)
             break;
         }
     }
-    // sequences.front().countDifBases();
     if (find)
     {
         (*itS).printCountBases();
@@ -248,7 +229,7 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command)
         (*itSeq).setBasesConcat(sequence);
         itSeq->updateStruct();
     }
-
+    updateCodigos();
     if (nSecuencias == 0)
     {
         std::cout << "La secuencia dada no existe." << std::endl;
@@ -364,4 +345,23 @@ void Controller::clear(Shell::argv_t argvs, Shell command)
     system("clear");
 #endif
 }
-// Funciones auxiliares
+// Funciones auxiliares segunda entrega
+void Controller::updateCodigos()
+{ 
+    frequencies.clear();
+    frequencies.assign(18, 0);
+    std::vector<int> freq;
+    std::list<Sequence>::iterator itSeq = sequences.begin();
+    itSeq = sequences.begin();
+    for (int i = 0; itSeq != sequences.end(); itSeq++, i++)
+    {
+        (*itSeq).updatecountBases();
+        freq = (*itSeq).getVecFrequencies();
+
+        for (int i = 0; i < frequencies.size(); i++)
+        {
+            // Frecuencias en su letra sumele la frecuencia de la secuencia
+            frequencies.at(i) = frequencies.at(i) + freq.at(i);
+        }
+    }
+}

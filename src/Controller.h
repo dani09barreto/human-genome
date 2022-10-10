@@ -26,8 +26,9 @@ class Controller{
     static void salir (Shell::argv_t argvs, Shell command);
     static int verificationARGV (Shell::argv_t argvs, Shell command);
     static void clear (Shell::argv_t argvs, Shell command);
-    //Funciones auxiliares
-  
+    //Funciones segunda entrega
+    static void updateCodigos();
+    
 };
 
 #endif
