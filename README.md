@@ -20,7 +20,7 @@ Debug
 g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
 ```
 ```sh
-cargar ArchivosPrueba/test_genome.fa
+cargar ArchivosPrueba/prueba1.fa
 ```
 ```sh
 es_subsecuencia a
