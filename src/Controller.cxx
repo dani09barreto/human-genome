@@ -238,10 +238,10 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   keyCodes.clear();
   keyCodes = arbolCod->obtenerCodigos();
 
-  std::map<char, std::string>::iterator it;
-  for (it = keyCodes.begin(); it != keyCodes.end(); it++) {
-    std::cout << it->first          // char con la letra (key)
-              << ':' << it->second  // string con el codigo
+  std::map<char, std::string>::iterator itMap;
+  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
+    std::cout << itMap->first          // char con la letra (key)
+              << ':' << itMap->second  // string con el codigo
               << std::endl;
   }
   for (int i = 0; i < letters.size(); i++) {
@@ -249,7 +249,7 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   }
   std::ofstream wf("student.fabin", std::ios::out | std::ios::binary);
   if (!wf) {
-    throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
+    throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
   }
   short cantiDif = 0;
   int cantSequences = sequences.size();
@@ -259,28 +259,25 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
       cantiDif++;
     }
   }
-  std::bitset<8> bit{};
-  std::stringstream string;
-  wf.write((char *)&cantiDif, sizeof(cantiDif));
+  wf.write((char *)&cantiDif, sizeof(short));
 
   for (int i = 0; i < letters.size(); i++) {
     if (frequencies[i] != 0) {
-        wf.write((char *)&letters[i], sizeof(char));
-        wf.write((char *)&frequencies[i], sizeof(int));
+      wf.write((char *)&letters[i], sizeof(char));
+      wf.write((char *)&frequencies[i], sizeof(double));
     }
   }
 
   wf.write((char *)&cantSequences, sizeof(cantSequences));
-  
-  for (Sequence sec : sequences){
-    std::cout << std::endl;
-    short tamaNombre = sec.getName().erase(0,1).size();
+
+  for (Sequence sec : sequences) {
+    short tamaNombre = sec.getName().erase(0, 1).size();
     wf.write((char *)&tamaNombre, sizeof(short));
-    
-    for (char ch : sec.getName()){
-        if (ch != '>'){
-            wf.write((char *)&ch, sizeof(char));
-        }
+
+    for (char ch : sec.getName()) {
+      if (ch != '>') {
+        wf.write((char *)&ch, sizeof(char));
+      }
     }
     int cantBases = sec.getBases().size();
     wf.write((char *)&cantBases, sizeof(int));
@@ -288,6 +285,31 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
     std::list<Line>::iterator it = sec.getBases().begin();
     short legthLine = (*it).getLenght();
     wf.write((char *)&legthLine, sizeof(short));
+
+    std::string str = "";
+    std::stringstream strBites;
+    for (char ch : sec.getBasesConcat()) {
+      itMap = keyCodes.find(ch);
+      str += itMap->second;
+    }
+    int contBites = 0;
+    for (char ch : str){
+        if (contBites == 7){
+            strBites << ch;
+            strBites << " ";
+            contBites = 0;
+        }else{
+            strBites << ch;
+            contBites ++;
+        }
+    }
+    std::string bytes;
+
+    while (!strBites.eof()){
+        strBites >> bytes;
+        std::bitset <8> bit {bytes};
+        wf.write((char *)&bit, sizeof(bit));
+    }
   }
 }
 
