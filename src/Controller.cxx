@@ -266,7 +266,8 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   for (int i = 0; i < letters.size(); i++) {
     if (frequencies[i] != 0) {
         wf.write((char *)&letters[i], sizeof(char));
-        wf.write((char *)&frequencies[i], sizeof(int));
+        long long aux = frequencies[i];
+        wf.write((char *)&aux, sizeof(long long));
     }
   }
 
