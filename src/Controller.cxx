@@ -239,16 +239,17 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   keyCodes = arbolCod->obtenerCodigos();
 
   std::map<char, std::string>::iterator itMap;
-  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
+/*   for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
     std::cout << itMap->first          // char con la letra (key)
               << ':' << itMap->second  // string con el codigo
               << std::endl;
   }
   for (int i = 0; i < letters.size(); i++) {
     std::cout << letters[i] << " " << frequencies[i] << std::endl;
-  }
-  std::ofstream wf("student.fabin", std::ios::out | std::ios::binary);
+  } */
+  std::ofstream wf(argvs[1], std::ios::out | std::ios::binary);
   if (!wf) {
+    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1] << std::endl;
     throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
   }
   short cantiDif = 0;
@@ -312,6 +313,7 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
         wf.write((char *)&bit, sizeof(bit));
     }
   }
+  std::cout << "Secuencias codificadas y almacenadas en " << argvs[1] << std::endl;
 }
 
 void Controller::decodificar(Shell::argv_t argvs, Shell command) {
