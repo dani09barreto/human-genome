@@ -4,9 +4,8 @@
  */
 
 #include "Controller.h"
-#include "Sequence.h"
-#include "ArbolCod.h"
 
+#include <bitset>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -15,355 +14,336 @@
 #include <sstream>
 #include <string>
 
+#include "ArbolCod.h"
+#include "Sequence.h"
+
 std::list<Sequence> sequences;
 std::vector<int> frequencies;
-std::vector<char> letters = {'A', 'C', 'G', 'T', 'U', 'R',
-                             'Y', 'K', 'M', 'S', 'W', 'B',
-                             'D', 'H', 'V', 'N', 'X', '-'};
+std::vector<char> letters = {'A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M',
+                             'S', 'W', 'B', 'D', 'H', 'V', 'N', 'X', '-'};
 std::map<char, std::string> keyCodes;
 
-void Controller::Cargar(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-    std::string line;
-    std::ifstream inputFile;
-    inputFile.open(argvs[1]);
-    try
-    {
-        if (!inputFile.is_open()) // No existe el archivo o no se puede abrir
-            throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
-        if (inputFile.peek() == std::ifstream::traits_type::eof()) // Comprobar que el archivo no este vacio
-            throw Shell::SyntaxError(Shell::SyntaxError::TypeError::EMPTY_FILE);
-    }
-    catch (Shell::SyntaxError &e)
-    { // excepciones generadas en la compilacion
-        std::cout << "[Error]: " << argvs[1] << " " << e.error();
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    // Reiniciar estructuras
-    sequences.clear();
+void Controller::Cargar(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+  std::string line;
+  std::ifstream inputFile;
+  inputFile.open(argvs[1]);
+  try {
+    if (!inputFile.is_open())  // No existe el archivo o no se puede abrir
+      throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
+    if (inputFile.peek() ==
+        std::ifstream::traits_type::eof())  // Comprobar que el archivo no este
+                                            // vacio
+      throw Shell::SyntaxError(Shell::SyntaxError::TypeError::EMPTY_FILE);
+  } catch (Shell::SyntaxError &e) {  // excepciones generadas en la compilacion
+    std::cout << "[Error]: " << argvs[1] << " " << e.error();
+  } catch (const std::exception &e) {
+    std::cerr << e.what() << '\n';
+  }
+  // Reiniciar estructuras
+  sequences.clear();
 
-    std::list<Sequence>::iterator itSeq = sequences.begin();
+  std::list<Sequence>::iterator itSeq = sequences.begin();
 
-    for (std::string line; std::getline(inputFile, line);)
-    {
-        if (std::string::npos != line.find(">"))
-        { // Si es una nueva secuencia
-            Sequence auxSeq;
-            auxSeq.setName(line);
-            sequences.push_back(auxSeq);
-        }
-        else
-        {
-            std::list<Sequence>::reference ref = sequences.back();
-            ref.addLine(line);
-        }
+  for (std::string line; std::getline(inputFile, line);) {
+    if (std::string::npos != line.find(">")) {  // Si es una nueva secuencia
+      Sequence auxSeq;
+      auxSeq.setName(line);
+      sequences.push_back(auxSeq);
+    } else {
+      std::list<Sequence>::reference ref = sequences.back();
+      ref.addLine(line);
     }
-    updateFreq();
-    if (sequences.size() == 1)
-    {
-        std::cout << "1 secuencia cargada correctamente desde " << argvs[1] << std::endl;
-    }
-    else if (sequences.size() > 1)
-    {
-        std::cout << sequences.size() << " secuencias cargadas correctamente desde " << argvs[1] << std::endl;
-    }
-    // inputFile.close();
+  }
+  updateFreq();
+  if (sequences.size() == 1) {
+    std::cout << "1 secuencia cargada correctamente desde " << argvs[1]
+              << std::endl;
+  } else if (sequences.size() > 1) {
+    std::cout << sequences.size() << " secuencias cargadas correctamente desde "
+              << argvs[1] << std::endl;
+  }
+  // inputFile.close();
 }
 
-void Controller::conteo(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-    if (sequences.size() == 0)
-    {
-        std::cout << "No hay secuencias cargadas en memoria." << std::endl;
-    }
-    else if (sequences.size() == 1)
-    {
-        std::cout << "1 secuencia en memoria." << std::endl;
-    }
-    else
-    {
-        std::cout << sequences.size() << " secuencias en memoria." << std::endl;
-    }
-}
-void Controller::salir(Shell::argv_t argvs, Shell command)
-{
-    std::cout << "Saliendo....\n";
-    exit(3);
-}
-void Controller::listar_secuencias(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-    std::list<Sequence>::iterator itSeq = sequences.begin();
-    std::string auxName = "";
-    if (sequences.empty())
-    {
-        std::cout << "No hay secuencias cargadas en memoria." << std::endl;
-    }
-    else
-    {
-        for (; itSeq != sequences.end(); itSeq++)
-        {
-            auxName = (*itSeq).getName().erase(0, 1);
-            if ((*itSeq).getComplete())
-            {
-                std::cout << "Secuencia " << auxName << " contiene " << (*itSeq).countDifBases() << " bases.\n";
-            }
-            else
-            {
-                std::cout << "Secuencia " << auxName << " contiene al menos " << (*itSeq).countDifBases() << " bases.\n";
-            }
-        }
-    }
-}
-void Controller::histograma(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-    if (sequences.empty())
-    {
-        std::cout << "No hay secuencias cargadas en memoria.";
-        return;
-    }
-
-    std::string auxNameSeq = ">" + argvs[1];
-    std::list<Sequence>::iterator itS = sequences.begin();
-    // std::cout<<auxNameSeq;
-    bool find = false;
-    for (; itS != sequences.end(); itS++)
-    {
-        if ((*itS).getName() == auxNameSeq)
-        {
-            find = true;
-            break;
-        }
-    }
-    if (find)
-    {
-        (*itS).printCountBases();
-    }
-    else
-    {
-        std::cout << "Secuencia invalida.";
-    }
+void Controller::conteo(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+  if (sequences.size() == 0) {
+    std::cout << "No hay secuencias cargadas en memoria." << std::endl;
+  } else if (sequences.size() == 1) {
+    std::cout << "1 secuencia en memoria." << std::endl;
+  } else {
+    std::cout << sequences.size() << " secuencias en memoria." << std::endl;
+  }
 }
 
-void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-    if (sequences.size() == 0)
-    {
-        std::cout << "No hay secuencias cargadas en memoria" << std::endl;
-        return;
-    }
-
-    std::string subSequencie = argvs[1];
-    int nSecuencias = 0;
-
-    for (Sequence sec : sequences)
-    {
-        std::string sequence = sec.getBasesConcat();
-        int found = -argvs[1].size();
-        do
-        {
-            found = sequence.find(subSequencie, found + argvs[1].size());
-            if (found != -1)
-                nSecuencias++;
-
-        } while (found != -1);
-    }
-    if (nSecuencias == 0)
-        std::cout << "La secuencia dada no existe." << std::endl;
-    else
-        std::cout << "La secuencia dada se repite " << nSecuencias << " veces" << std::endl;
+void Controller::salir(Shell::argv_t argvs, Shell command) {
+  std::cout << "Saliendo....\n";
+  exit(3);
 }
-void Controller::enmascarar(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
 
-    if (sequences.size() == 0)
-    {
-        std::cout << "No hay secuencias cargadas en memoria" << std::endl;
-        return;
+void Controller::listar_secuencias(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+  std::list<Sequence>::iterator itSeq = sequences.begin();
+  std::string auxName = "";
+  if (sequences.empty()) {
+    std::cout << "No hay secuencias cargadas en memoria." << std::endl;
+  } else {
+    for (; itSeq != sequences.end(); itSeq++) {
+      auxName = (*itSeq).getName().erase(0, 1);
+      if ((*itSeq).getComplete()) {
+        std::cout << "Secuencia " << auxName << " contiene "
+                  << (*itSeq).countDifBases() << " bases.\n";
+      } else {
+        std::cout << "Secuencia " << auxName << " contiene al menos "
+                  << (*itSeq).countDifBases() << " bases.\n";
+      }
     }
-    int nSecuencias = 0;
-    std::string subSequencie = argvs[1];
-    std::list<Sequence>::iterator itSeq = sequences.begin();
+  }
+}
 
-    for (; itSeq != sequences.end(); itSeq++)
-    {
-        std::string sequence = (*itSeq).getBasesConcat();
-        int found = -1;
-        do
-        {
-            found = sequence.find(subSequencie, found + argvs[1].size());
-            if (found != -1)
-                nSecuencias++;
+void Controller::histograma(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+  if (sequences.empty()) {
+    std::cout << "No hay secuencias cargadas en memoria.";
+    return;
+  }
 
-            for (int i = found; i < found + subSequencie.size(); i++)
-            {
-                sequence.at(i) = 'X';
-            }
-        } while (found != -1);
-        (*itSeq).setBasesConcat(sequence);
-        itSeq->updateStruct();
+  std::string auxNameSeq = ">" + argvs[1];
+  std::list<Sequence>::iterator itS = sequences.begin();
+  // std::cout<<auxNameSeq;
+  bool find = false;
+  for (; itS != sequences.end(); itS++) {
+    if ((*itS).getName() == auxNameSeq) {
+      find = true;
+      break;
     }
+  }
+  if (find) {
+    (*itS).printCountBases();
+  } else {
+    std::cout << "Secuencia invalida.";
+  }
+}
+
+void Controller::es_subsecuencia(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+  if (sequences.size() == 0) {
+    std::cout << "No hay secuencias cargadas en memoria" << std::endl;
+    return;
+  }
+
+  std::string subSequencie = argvs[1];
+  int nSecuencias = 0;
+
+  for (Sequence sec : sequences) {
+    std::string sequence = sec.getBasesConcat();
+    int found = -argvs[1].size();
+    do {
+      found = sequence.find(subSequencie, found + argvs[1].size());
+      if (found != -1) nSecuencias++;
+
+    } while (found != -1);
+  }
+  if (nSecuencias == 0)
+    std::cout << "La secuencia dada no existe." << std::endl;
+  else
+    std::cout << "La secuencia dada se repite " << nSecuencias << " veces"
+              << std::endl;
+}
+
+void Controller::enmascarar(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+
+  if (sequences.size() == 0) {
+    std::cout << "No hay secuencias cargadas en memoria" << std::endl;
+    return;
+  }
+  int nSecuencias = 0;
+  std::string subSequencie = argvs[1];
+  std::list<Sequence>::iterator itSeq = sequences.begin();
+
+  for (; itSeq != sequences.end(); itSeq++) {
+    std::string sequence = (*itSeq).getBasesConcat();
+    int found = -1;
+    do {
+      found = sequence.find(subSequencie, found + argvs[1].size());
+      if (found != -1) nSecuencias++;
+
+      for (int i = found; i < found + subSequencie.size(); i++) {
+        sequence.at(i) = 'X';
+      }
+    } while (found != -1);
+    (*itSeq).setBasesConcat(sequence);
+    itSeq->updateStruct();
+  }
+
+  if (nSecuencias == 0) {
+    std::cout << "La secuencia dada no existe." << std::endl;
+    return;
+  }
+  updateFreq();
+  if (nSecuencias == 1) {
+    std::cout << "1 secuencia ha sido enmascarada." << std::endl;
+    return;
+  }
+  std::cout << nSecuencias << " secuencias han sido enmascaradas" << std::endl;
+}
+
+void Controller::guardar(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+
+  if (sequences.size() == 0) {
+    std::cout << " No hay secuencias cargadas en memoria" << std::endl;
+    return;
+  }
+  try {
+    std ::fstream outFile;
+    outFile.open(argvs[1] + ".fa", std::ios::out);
+    for (Sequence sec : sequences) {
+      outFile << sec.getName() << "\n";
+      for (Line line : sec.getBases()) {
+        outFile << line.getLine() << "\n";
+      }
+    }
+    std::cout << "Las secuencias han sido guardadas en " << argvs[1] << ".fa"
+              << std::endl;
+  } catch (std::exception e) {
+    std::cout << "Error guardando en " << argvs[1] << std::endl;
+  }
+}
+
+void Controller::codificar(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+  ArbolCod *arbolCod = new ArbolCod();
+  arbolCod->generarPQParaArbol(letters, frequencies);
+
+  // Copiar map de codigos con su respectiva letra
+  keyCodes.clear();
+  keyCodes = arbolCod->obtenerCodigos();
+
+  std::map<char, std::string>::iterator it;
+  for (it = keyCodes.begin(); it != keyCodes.end(); it++) {
+    std::cout << it->first          // char con la letra (key)
+              << ':' << it->second  // string con el codigo
+              << std::endl;
+  }
+  for (int i = 0; i < letters.size(); i++) {
+    std::cout << letters[i] << " " << frequencies[i] << std::endl;
+  }
+  std::ofstream wf("student.fabin", std::ios::out | std::ios::binary);
+  if (!wf) {
+    throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
+  }
+  short cantiDif = 0;
+  int cantSequences = sequences.size();
+
+  for (int i = 0; i < frequencies.size(); i++) {
+    if (frequencies.at(i) != 0) {
+      cantiDif++;
+    }
+  }
+  std::bitset<8> bit{};
+  std::stringstream string;
+  wf.write((char *)&cantiDif, sizeof(cantiDif));
+
+  for (int i = 0; i < letters.size(); i++) {
+    if (frequencies[i] != 0) {
+        wf.write((char *)&letters[i], sizeof(char));
+        wf.write((char *)&frequencies[i], sizeof(int));
+    }
+  }
+
+  wf.write((char *)&cantSequences, sizeof(cantSequences));
+  
+  for (Sequence sec : sequences){
+    std::cout << std::endl;
+    short tamaNombre = sec.getName().erase(0,1).size();
+    wf.write((char *)&tamaNombre, sizeof(short));
     
-    if (nSecuencias == 0)
-    {
-        std::cout << "La secuencia dada no existe." << std::endl;
-        return;
-    }
-    updateFreq();
-    if (nSecuencias == 1)
-    {
-        std::cout << "1 secuencia ha sido enmascarada." << std::endl;
-        return;
-    }
-    std::cout << nSecuencias << " secuencias han sido enmascaradas" << std::endl;
-}
-void Controller::guardar(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-
-    if (sequences.size() == 0)
-    {
-        std::cout << " No hay secuencias cargadas en memoria" << std::endl;
-        return;
-    }
-    try
-    {
-        std ::fstream outFile;
-        outFile.open(argvs[1] + ".fa", std::ios::out);
-        for (Sequence sec : sequences)
-        {
-            outFile << sec.getName() << "\n";
-            for (Line line : sec.getBases())
-            {
-                outFile << line.getLine() << "\n";
-            }
+    for (char ch : sec.getName()){
+        if (ch != '>'){
+            wf.write((char *)&ch, sizeof(char));
         }
-        std::cout << "Las secuencias han sido guardadas en " << argvs[1] << ".fa" << std::endl;
     }
-    catch (std::exception e)
-    {
-        std::cout << "Error guardando en " << argvs[1] << std::endl;
-    }
-}
-void Controller::codificar(Shell::argv_t argvs, Shell command)
-{
-    /*
+    int cantBases = sec.getBases().size();
+    wf.write((char *)&cantBases, sizeof(int));
 
-
-    COMENTADO PARA PODER REALIZAR PRUEBAS DEL ARBOL DE HUFFMAN
-
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }*/
-    ArbolCod *arbolCod = new ArbolCod();
-    arbolCod->generarPQParaArbol(letters, frequencies);
-
-    // Copiar map de codigos con su respectiva letra
-    keyCodes.clear();
-    keyCodes = arbolCod->obtenerCodigos();
-
-    std::map<char, std::string>::iterator it;
-    for (it = keyCodes.begin(); it != keyCodes.end(); it++)
-    {
-        std::cout << it->first // char con la letra (key)
-                  << ':'
-                  << it->second // string con el codigo
-                  << std::endl;
-    }
-}
-void Controller::decodificar(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-}
-void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-}
-void Controller::base_remota(Shell::argv_t argvs, Shell command)
-{
-    if (Controller::verificationARGV(argvs, command) > 0)
-    {
-        return;
-    }
-}
-int Controller::verificationARGV(Shell::argv_t argvs, Shell command)
-{
-    if (argvs[0].compare("ayuda") == 0 && argvs.size() == 2)
-    {
-        std::cout << "\nComando:\n";
-        std::cout << "- " << command.getCommand() << "\n\t"
-                  << "Uso: " << command.getCommandUsage() << "\n\tDescripcion: " << command.getCommandDescription() << "\n";
-        return 1;
-    }
-    else if (argvs.size() != command.getArgc())
-    {
-        throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
-        return 2;
-    }
-    return 0;
+    std::list<Line>::iterator it = sec.getBases().begin();
+    short legthLine = (*it).getLenght();
+    wf.write((char *)&legthLine, sizeof(short));
+  }
 }
 
-void Controller::clear(Shell::argv_t argvs, Shell command)
-{
+void Controller::decodificar(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+}
+
+void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+}
+
+void Controller::base_remota(Shell::argv_t argvs, Shell command) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
+    return;
+  }
+}
+
+int Controller::verificationARGV(Shell::argv_t argvs, Shell command) {
+  if (argvs[0].compare("ayuda") == 0 && argvs.size() == 2) {
+    std::cout << "\nComando:\n";
+    std::cout << "- " << command.getCommand() << "\n\t"
+              << "Uso: " << command.getCommandUsage()
+              << "\n\tDescripcion: " << command.getCommandDescription() << "\n";
+    return 1;
+  } else if (argvs.size() != command.getArgc()) {
+    throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_AGV);
+    return 2;
+  }
+  return 0;
+}
+
+void Controller::clear(Shell::argv_t argvs, Shell command) {
 #ifdef WIN32
-    system("cls");
+  system("cls");
 #else
-    system("clear");
+  system("clear");
 #endif
 }
 // Funciones auxiliares segunda entrega
-void Controller::updateFreq()
-{ 
-    frequencies.clear();
-    frequencies.assign(18, 0);
-    std::vector<int> freq;
-    std::list<Sequence>::iterator itSeq = sequences.begin();
-    itSeq = sequences.begin();
-    for (int i = 0; itSeq != sequences.end(); itSeq++, i++)
-    {
-        (*itSeq).updatecountBases();
-        freq = (*itSeq).getVecFrequencies();
+void Controller::updateFreq() {
+  frequencies.clear();
+  frequencies.assign(18, 0);
+  std::vector<int> freq;
+  std::list<Sequence>::iterator itSeq = sequences.begin();
+  itSeq = sequences.begin();
+  for (int i = 0; itSeq != sequences.end(); itSeq++, i++) {
+    (*itSeq).updatecountBases();
+    freq = (*itSeq).getVecFrequencies();
 
-        for (int i = 0; i < frequencies.size(); i++)
-        {
-            // Frecuencias en su letra sumele la frecuencia de la secuencia
-            frequencies.at(i) = frequencies.at(i) + freq.at(i);
-        }
+    for (int i = 0; i < frequencies.size(); i++) {
+      // Frecuencias en su letra sumele la frecuencia de la secuencia
+      frequencies.at(i) = frequencies.at(i) + freq.at(i);
     }
+  }
 }

@@ -50,6 +50,7 @@
         "cstring": "cpp",
         "optional": "cpp",
         "cinttypes": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "bitset": "cpp"
     }
 }
