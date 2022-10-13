@@ -263,8 +263,9 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
 
   for (int i = 0; i < letters.size(); i++) {
     if (frequencies[i] != 0) {
-      wf.write((char *)&letters[i], sizeof(char));
-      wf.write((char *)&frequencies[i], sizeof(double));
+        wf.write((char *)&letters[i], sizeof(char));
+        long long aux = frequencies[i];
+        wf.write((char *)&aux, sizeof(long long));
     }
   }
 
@@ -279,8 +280,8 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
         wf.write((char *)&ch, sizeof(char));
       }
     }
-    int cantBases = sec.getBases().size();
-    wf.write((char *)&cantBases, sizeof(int));
+    long long cantBases = sec.getBases().size();
+    wf.write((char *)&cantBases, sizeof(long long));
 
     std::list<Line>::iterator it = sec.getBases().begin();
     short legthLine = (*it).getLenght();
