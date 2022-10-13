@@ -283,8 +283,8 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
             wf.write((char *)&ch, sizeof(char));
         }
     }
-    int cantBases = sec.getBases().size();
-    wf.write((char *)&cantBases, sizeof(int));
+    long long cantBases = sec.getBases().size();
+    wf.write((char *)&cantBases, sizeof(long long));
 
     std::list<Line>::iterator it = sec.getBases().begin();
     short legthLine = (*it).getLenght();
