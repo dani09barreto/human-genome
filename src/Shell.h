@@ -42,7 +42,7 @@ class Shell {
 
   class SyntaxError : public std::exception {
    public:
-    enum TypeError {
+    enum TypeError  {
       COMMAND_DONT_EXIST,
       ERROR_AGV,
       ERROR_OPEN_FILE,
