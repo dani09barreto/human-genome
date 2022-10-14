@@ -355,6 +355,8 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   arbolcod->generarPQParaArbol(letters, frequencies);
   keyCodes.clear();
   keyCodes = arbolcod->obtenerCodigos();
+
+  //se recibe cantidad de secuencias en el archivo
   int cantSeq;
   rf.read((char *)&cantSeq, sizeof(cantSeq));
   short sizeName;
@@ -367,18 +369,23 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   for (int i = 0; i < cantSeq; i++) {
     name = "";
     Sequence seqAux;
+    //se recibe tamaño del nombre 
     rf.read((char *)&sizeName, sizeof(sizeName));
     // nombre secuencia
     for (int j = 0; j < sizeName; ++j) {
       char c;
+      //se recibe el nombre caracter por caracter
       rf.read((char *)&c, sizeof(char));
       name += c;
     }
     seqAux.setName(name);
     std::bitset<8> bit;
     std::string bitchar = "";
+    //se lee la cantidad de bases en la secuencia
     rf.read((char *)&cantBases, sizeof(cantBases));
+    //se lee la indentacion de cada linea
     rf.read((char *)&ident, sizeof(short));
+    //se lee la cantidad de bytes en la secuenca (solo para decodificar no para armar secuencia)
     rf.read((char *)&lengthBytes, sizeof(long long));
     int contBases = 0;
     std::string concatBases;
@@ -386,10 +393,15 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
       rf.read((char *)&bit, sizeof(bit));
       bitchar += bit.to_string();
     }
+    //se retorna las bases concatenadas desencriptadas
     concatBases = arbolcod->decodificar(bitchar, cantBases);
     std::cout << name << std::endl;
     std::cout << concatBases << std::endl;
     seqAux.setBasesConcat(concatBases);
+
+    //se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
+    //crear cada linea dependiendo la indentacion
+    //añadir linea a secuencia y luego añadir secuencia a la lista de secuencias
   }
 }
 
