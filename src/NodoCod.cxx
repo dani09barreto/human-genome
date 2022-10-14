@@ -54,8 +54,6 @@ char NodoCod::decodificar(std::queue<char> &cola_cod) {
   }
   char ch = cola_cod.front();
   cola_cod.pop();
-  std::cout << ch << "dato cola \n";
-  std::cout << cola_cod.size() << "tama \n";
   if (ch == '1') {
     return (this->hijoDer->decodificar(cola_cod));
   } else if (ch == '0') {

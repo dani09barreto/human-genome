@@ -110,7 +110,7 @@ std::string ArbolCod::decodificar(std::string cod, int &contBases,
         basesConcat += byte;
         contBases++;
       }
-      return "";
     }
+    return "";
   }
 }

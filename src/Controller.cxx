@@ -283,6 +283,7 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
       }
     }
     long long cantBases = sec.getBasesConcat().size();
+    std::cout << cantBases << std::endl;
     wf.write((char *)&cantBases, sizeof(long long));
 
     short legthLine = sec.getBases().size();
@@ -373,6 +374,7 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     std::bitset<8> bit;
     std::string bitchar = "";
     rf.read((char *)&cantLines, sizeof(cantLines));
+    std::cout << cantLines << std::endl;
     rf.read((char *)&ident, sizeof(short));
     int contBases = 0;
     std::string concatBases = "";
@@ -380,9 +382,10 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
       rf.read((char *)&bit, sizeof(bit));
       bitchar += bit.to_string();
       bitchar = arbolcod->decodificar(bitchar, contBases, concatBases);
+      std::cout << bitchar << "\n";
     }
-    /*     std::cout << name << std::endl;
-        std::cout << concatBases << std::endl; */
+    std::cout << name << std::endl;
+    std::cout << concatBases << std::endl;
     break;
   }
 }
