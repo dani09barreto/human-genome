@@ -49,9 +49,6 @@ char NodoCod::decodificar(std::queue<char> &cola_cod) {
   if (this->esHoja()) {
     return this->letra;
   }
-  if (cola_cod.empty()) {
-    return '+';
-  }
   char ch = cola_cod.front();
   cola_cod.pop();
   if (ch == '1') {

@@ -279,15 +279,18 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
 
     for (char ch : sec.getName()) {
       if (ch != '>') {
+        std::cout << ch;
         wf.write((char *)&ch, sizeof(char));
       }
     }
+    std::cout << "\n";
     long long cantBases = sec.getBasesConcat().size();
-    std::cout << cantBases << std::endl;
     wf.write((char *)&cantBases, sizeof(long long));
 
     short legthLine = sec.getBases().size();
     wf.write((char *)&legthLine, sizeof(short));
+
+    long long lengthBytes = 1;
 
     std::string str = "";
     std::stringstream strBites;
@@ -301,12 +304,14 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
         strBites << ch;
         strBites << " ";
         contBites = 0;
+        lengthBytes++;
       } else {
         strBites << ch;
         contBites++;
       }
     }
     std::string bytes;
+    wf.write((char *)&lengthBytes, sizeof(long long));
 
     while (!strBites.eof()) {
       strBites >> bytes;
@@ -329,6 +334,7 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  sequences.clear();
   std::ifstream rf("res.fabin", std::ios::out | std::ios::binary);
   if (!rf) {
     std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
@@ -349,22 +355,20 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   arbolcod->generarPQParaArbol(letters, frequencies);
   keyCodes.clear();
   keyCodes = arbolcod->obtenerCodigos();
-  std::map<char, std::string>::iterator itMap;
-  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
-    std::cout << itMap->first          // char con la letra (key)
-              << ':' << itMap->second  // string con el codigo
-              << std::endl;
-  }
   int cantSeq;
   rf.read((char *)&cantSeq, sizeof(cantSeq));
   short sizeName;
   std::string name;
-  long long cantLines;
+  long long cantBases;
   short ident;
+  long long lengthBytes;
+
+  // se recorre el archivo dependiendo de la cantidad de secuencia
   for (int i = 0; i < cantSeq; i++) {
     name = "";
     Sequence seqAux;
     rf.read((char *)&sizeName, sizeof(sizeName));
+    // nombre secuencia
     for (int j = 0; j < sizeName; ++j) {
       char c;
       rf.read((char *)&c, sizeof(char));
@@ -373,20 +377,19 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     seqAux.setName(name);
     std::bitset<8> bit;
     std::string bitchar = "";
-    rf.read((char *)&cantLines, sizeof(cantLines));
-    std::cout << cantLines << std::endl;
+    rf.read((char *)&cantBases, sizeof(cantBases));
     rf.read((char *)&ident, sizeof(short));
+    rf.read((char *)&lengthBytes, sizeof(long long));
     int contBases = 0;
-    std::string concatBases = "";
-    while (cantLines > contBases) {
+    std::string concatBases;
+    for (int i = 0; i < lengthBytes; i++) {
       rf.read((char *)&bit, sizeof(bit));
       bitchar += bit.to_string();
-      bitchar = arbolcod->decodificar(bitchar, contBases, concatBases);
-      std::cout << bitchar << "\n";
     }
+    concatBases = arbolcod->decodificar(bitchar, cantBases);
     std::cout << name << std::endl;
     std::cout << concatBases << std::endl;
-    break;
+    seqAux.setBasesConcat(concatBases);
   }
 }
 
