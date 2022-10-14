@@ -55,5 +55,7 @@ char NodoCod::decodificar(std::queue<char> &cola_cod) {
     return (this->hijoDer->decodificar(cola_cod));
   } else if (ch == '0') {
     return (this->hijoIzq->decodificar(cola_cod));
+  }else{
+    return '+';
   }
 }

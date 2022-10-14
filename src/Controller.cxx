@@ -207,7 +207,8 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
     return;
   }
   if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fa") {
-      throw Shell::SyntaxError(Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FA);
+    throw Shell::SyntaxError(
+        Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FA);
   }
 
   if (sequences.size() == 0) {
@@ -216,14 +217,14 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
   }
   try {
     std ::fstream outFile;
-    outFile.open(argvs[1] + ".fa", std::ios::out);
+    outFile.open(argvs[1], std::ios::out);
     for (Sequence sec : sequences) {
       outFile << sec.getName() << "\n";
       for (Line line : sec.getBases()) {
         outFile << line.getLine() << "\n";
       }
     }
-    std::cout << "Las secuencias han sido guardadas en " << argvs[1] << ".fa"
+    std::cout << "Las secuencias han sido guardadas en " << argvs[1]
               << std::endl;
   } catch (std::exception e) {
     std::cout << "Error guardando en " << argvs[1] << std::endl;
@@ -235,7 +236,8 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
     return;
   }
   if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fabin") {
-      throw Shell::SyntaxError(Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FABIN);
+    throw Shell::SyntaxError(
+        Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FABIN);
   }
   ArbolCod *arbolCod = new ArbolCod();
   arbolCod->generarPQParaArbol(letters, frequencies);
@@ -398,8 +400,8 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     }
     // se retorna las bases concatenadas desencriptadas
     concatBases = arbolcod->decodificar(bitchar, cantBases);
-    //std::cout << name << std::endl;
-    //std::cout << concatBases << std::endl;
+    // std::cout << name << std::endl;
+    // std::cout << concatBases << std::endl;
     seqAux.setBasesConcat(concatBases);
     seqAux.updateStruct(ident);
     // se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
@@ -409,7 +411,8 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     sequences.push_back(seqAux);
   }
   rf.close();
-  std::cout << "Secuencias decodificadas desde " << argvs[1] << " y cargadas en memoria." << std::endl;
+  std::cout << "Secuencias decodificadas desde " << argvs[1]
+            << " y cargadas en memoria." << std::endl;
 }
 
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {

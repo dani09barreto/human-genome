@@ -105,4 +105,7 @@ std::string ArbolCod::decodificar(std::string cod, long long cantBases) {
     }
     return basesConcat;
   }
+  else{
+    return "+";
+  }
 }
