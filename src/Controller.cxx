@@ -206,6 +206,9 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fa") {
+      throw Shell::SyntaxError(Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FA);
+  }
 
   if (sequences.size() == 0) {
     std::cout << " No hay secuencias cargadas en memoria" << std::endl;
@@ -230,6 +233,9 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
 void Controller::codificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
+  }
+  if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fabin") {
+      throw Shell::SyntaxError(Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FABIN);
   }
   ArbolCod *arbolCod = new ArbolCod();
   arbolCod->generarPQParaArbol(letters, frequencies);
@@ -278,15 +284,12 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
     wf.write((char *)&tamaNombre, sizeof(short));
 
     for (char ch : sec.getName()) {
-      std::cout << ch;
       wf.write((char *)&ch, sizeof(char));
     }
-    std::cout << "\n";
     long long cantBases = sec.getBasesConcat().size();
     wf.write((char *)&cantBases, sizeof(long long));
     std::list<Line>::iterator itL = sec.getBases().begin();
     short legthLine = (*itL).getLenght();
-    std::cout<<"TAMANO LINEA: "<<legthLine<<"\n";
     wf.write((char *)&legthLine, sizeof(short));
 
     long long lengthBytes = 1;
@@ -334,7 +337,7 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     return;
   }
   sequences.clear();
-  std::ifstream rf("res.fabin", std::ios::out | std::ios::binary);
+  std::ifstream rf(argvs[1], std::ios::out | std::ios::binary);
   if (!rf) {
     std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
               << std::endl;
@@ -405,6 +408,8 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     // secuencias
     sequences.push_back(seqAux);
   }
+  rf.close();
+  std::cout << "Secuencias decodificadas desde " << argvs[1] << " y cargadas en memoria." << std::endl;
 }
 
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {

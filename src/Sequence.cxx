@@ -56,7 +56,6 @@ void Sequence::updateStruct(int n_lenght) {
     auxS = "";
     auxS = this->basesConcat.substr(j, n_lenght);
     j = j + n_lenght;
-    std::cout << "auxS: " << auxS << "\n";
     auxLine.setLine(auxS);
     if (auxS.size() < n_lenght) {
       auxLine.setLenght(auxS.size());

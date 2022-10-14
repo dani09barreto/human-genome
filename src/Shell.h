@@ -46,7 +46,9 @@ class Shell {
       COMMAND_DONT_EXIST,
       ERROR_AGV,
       ERROR_OPEN_FILE,
-      EMPTY_FILE
+      EMPTY_FILE,
+      EXTENSION_ERROR_FILE_FABIN,
+      EXTENSION_ERROR_FILE_FA
     };
 
    private:
