@@ -1,6 +1,7 @@
 #ifndef NodoCod_H
 #define NodoCod_H
 #include <vector>
+#include <queue>
 class NodoCod {
 protected:
 	int freq;
@@ -22,6 +23,7 @@ public:
 	bool esHoja();
 	void fijarHijoIzq(NodoCod *izq);
 	void fijarHijoDer(NodoCod *der);
+	char decodificar(std::queue<char> &cola_cod);
 };
 /*Clase auxiliar que sirve para facilitar
 la comparación de frecuencias a la hora

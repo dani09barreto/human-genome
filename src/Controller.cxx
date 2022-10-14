@@ -239,17 +239,18 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   keyCodes = arbolCod->obtenerCodigos();
 
   std::map<char, std::string>::iterator itMap;
-/*   for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
-    std::cout << itMap->first          // char con la letra (key)
-              << ':' << itMap->second  // string con el codigo
-              << std::endl;
-  }
-  for (int i = 0; i < letters.size(); i++) {
-    std::cout << letters[i] << " " << frequencies[i] << std::endl;
-  } */
+  /*   for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
+      std::cout << itMap->first          // char con la letra (key)
+                << ':' << itMap->second  // string con el codigo
+                << std::endl;
+    }
+    for (int i = 0; i < letters.size(); i++) {
+      std::cout << letters[i] << " " << frequencies[i] << std::endl;
+    } */
   std::ofstream wf(argvs[1], std::ios::out | std::ios::binary);
   if (!wf) {
-    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1] << std::endl;
+    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
+              << std::endl;
     throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
   }
   short cantiDif = 0;
@@ -264,9 +265,9 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
 
   for (int i = 0; i < letters.size(); i++) {
     if (frequencies[i] != 0) {
-        wf.write((char *)&letters[i], sizeof(char));
-        long long aux = frequencies[i];
-        wf.write((char *)&aux, sizeof(long long));
+      wf.write((char *)&letters[i], sizeof(char));
+      long long aux = frequencies[i];
+      wf.write((char *)&aux, sizeof(long long));
     }
   }
 
@@ -295,30 +296,87 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
       str += itMap->second;
     }
     int contBites = 0;
-    for (char ch : str){
-        if (contBites == 7){
-            strBites << ch;
-            strBites << " ";
-            contBites = 0;
-        }else{
-            strBites << ch;
-            contBites ++;
-        }
+    for (char ch : str) {
+      if (contBites == 7) {
+        strBites << ch;
+        strBites << " ";
+        contBites = 0;
+      } else {
+        strBites << ch;
+        contBites++;
+      }
     }
     std::string bytes;
 
-    while (!strBites.eof()){
-        strBites >> bytes;
-        std::bitset <8> bit {bytes};
-        wf.write((char *)&bit, sizeof(bit));
+    while (!strBites.eof()) {
+      strBites >> bytes;
+      if (bytes.size() != 8){
+        int size = bytes.size();
+        for (int k = 0; k < 8 - size; k ++){
+            bytes += '0';
+        }
+      }
+      std::bitset<8> bit {bytes};
+      wf.write((char *)&bit, sizeof(bit));
     }
   }
-  std::cout << "Secuencias codificadas y almacenadas en " << argvs[1] << std::endl;
+  wf.close();
+  std::cout << "Secuencias codificadas y almacenadas en " << argvs[1]
+            << std::endl;
 }
 
 void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
+  }
+  std::ifstream rf("res.fabin", std::ios::out | std::ios::binary);
+  if (!rf) {
+    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
+              << std::endl;
+    throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
+  }
+  initFreq();
+  short lenghtBases;
+  rf.read((char *)&lenghtBases, sizeof(short));
+  for (int i = 0; i < lenghtBases; i++) {
+    char base;
+    long long count;
+    rf.read((char *)&base, sizeof(char));
+    rf.read((char *)&count, sizeof(long long));
+    fillFreq(base, count);
+  }
+  ArbolCod *arbolcod = new ArbolCod();
+  arbolcod->generarPQParaArbol(letters, frequencies);
+  keyCodes.clear();
+  keyCodes = arbolcod->obtenerCodigos();
+  int cantSeq;
+  rf.read((char *)&cantSeq, sizeof(cantSeq));
+  short sizeName;
+  std::string name;
+  long long cantLines;
+  short ident;
+  for (int i = 0; i < cantSeq; i++) {
+    name = "";
+    Sequence seqAux;
+    rf.read((char *)&sizeName, sizeof(sizeName));
+    for (int j = 0; j < sizeName; ++j) {
+      char c;
+      rf.read((char *)&c, sizeof(char));
+      name += c;
+    }
+    seqAux.setName(name);
+    std::bitset<8> bit;
+    std::string bitchar = "";
+    rf.read((char *)&cantLines, sizeof(cantLines));
+    rf.read((char *)&ident, sizeof(short));
+    for (int j = 0; j < cantLines; j++) {
+        rf.read((char *)&bit, sizeof(bit));
+        bitchar += bit.to_string();
+        bitchar+="\n";
+      
+    }
+    
+    break;
   }
 }
 
@@ -370,5 +428,13 @@ void Controller::updateFreq() {
       // Frecuencias en su letra sumele la frecuencia de la secuencia
       frequencies.at(i) = frequencies.at(i) + freq.at(i);
     }
+  }
+}
+void Controller::initFreq() {
+  for (int i = 0; i < 18; i++) frequencies.push_back(0);
+}
+void Controller::fillFreq(char letter, long long cont) {
+  for (int i = 0; i < 18; i++) {
+    if (letters[i] == letter) frequencies[i] = cont;
   }
 }

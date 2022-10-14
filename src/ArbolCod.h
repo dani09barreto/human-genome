@@ -27,5 +27,6 @@ public:
 		std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq);
 	void generarPQParaArbol(std::vector<char> letras, std::vector<int> freq);
 	void generarCodigos(NodoCod *root, std::string str);
+	std::string decodificar(std::string cod);
 };
 #endif

@@ -27,6 +27,8 @@ class Controller {
   static void clear(Shell::argv_t argvs, Shell command);
   // Funciones segunda entrega
   static void updateFreq();
+  static void initFreq();
+  static void fillFreq(char letter, long long cont);
 };
 
 #endif
