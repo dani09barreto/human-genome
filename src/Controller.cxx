@@ -466,7 +466,7 @@ void Controller::updateFreq() {
   }
 }
 void Controller::initFreq() {
-  for (int i = 0; i < 18; i++) frequencies.push_back(0);
+  frequencies.assign(18, 0);
 }
 void Controller::fillFreq(char letter, long long cont) {
   for (int i = 0; i < 18; i++) {
