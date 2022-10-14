@@ -54,19 +54,26 @@ void Sequence::updateStruct(int n_lenght) {
   int j = 0;
   while (1) {
     auxS = "";
-    for (int i = 0; i < n_lenght; i++) {
-      auxS = this->basesConcat.substr(j, n_lenght);
-      j = j + n_lenght;
-    }
+    auxS = this->basesConcat.substr(j, n_lenght);
+    j = j + n_lenght;
+    std::cout << "auxS: " << auxS << "\n";
     auxLine.setLine(auxS);
     if (auxS.size() < n_lenght) {
       auxLine.setLenght(auxS.size());
+      if (auxS.find('-') != std::string::npos) {
+        setComplete(false);
+      }
+      bases.push_back(auxLine);
       break;
     } else {
       auxLine.setLenght(n_lenght);
     }
+    if (auxS.find('-') != std::string::npos) {
+      setComplete(false);
+    }
     bases.push_back(auxLine);
   }
+  updatecountBases();
 }
 void Sequence::updatecountBases() {
   int aux = 0;

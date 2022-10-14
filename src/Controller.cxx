@@ -284,8 +284,9 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
     std::cout << "\n";
     long long cantBases = sec.getBasesConcat().size();
     wf.write((char *)&cantBases, sizeof(long long));
-
-    short legthLine = sec.getBases().size();
+    std::list<Line>::iterator itL = sec.getBases().begin();
+    short legthLine = (*itL).getLenght();
+    std::cout<<"TAMANO LINEA: "<<legthLine<<"\n";
     wf.write((char *)&legthLine, sizeof(short));
 
     long long lengthBytes = 1;
@@ -394,8 +395,8 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     }
     // se retorna las bases concatenadas desencriptadas
     concatBases = arbolcod->decodificar(bitchar, cantBases);
-    std::cout << name << std::endl;
-    std::cout << concatBases << std::endl;
+    //std::cout << name << std::endl;
+    //std::cout << concatBases << std::endl;
     seqAux.setBasesConcat(concatBases);
     seqAux.updateStruct(ident);
     // se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
