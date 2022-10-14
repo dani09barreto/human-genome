@@ -2,6 +2,7 @@
 #define NodoCod_H
 #include <vector>
 #include <queue>
+
 class NodoCod {
 protected:
 	int freq;

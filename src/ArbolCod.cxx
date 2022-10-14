@@ -85,7 +85,9 @@ void ArbolCod::generarCodigos(NodoCod *root, std::string str) {
   this->generarCodigos(root->obtenerHijoDer(), str + "1");
 }
 std::map<char, std::string> ArbolCod::obtenerCodigos() { return this->codigos; }
-std::string ArbolCod::decodificar(std::string cod) {
+
+std::string ArbolCod::decodificar(std::string cod, int &contBases,
+                                  std::string &basesConcat) {
   std::string concat = "";
   std::queue<char> copy;
   char byte;
@@ -97,10 +99,18 @@ std::string ArbolCod::decodificar(std::string cod) {
     while (!cola_cod.empty()) {
       copy = cola_cod;
       byte = this->obtenerRaiz()->decodificar(cola_cod);
-      if (byte == '\0') {
-		
+      if (byte == '+') {
+        std::string copyStr = "";
+        while (!copy.empty()) {
+          copyStr += copy.front();
+          copy.pop();
+          return copyStr;
+        }
+      } else {
+        basesConcat += byte;
+        contBases++;
       }
-      break;
+      return "";
     }
   }
 }

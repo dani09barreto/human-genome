@@ -282,11 +282,10 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
         wf.write((char *)&ch, sizeof(char));
       }
     }
-    long long cantBases = sec.getBases().size();
+    long long cantBases = sec.getBasesConcat().size();
     wf.write((char *)&cantBases, sizeof(long long));
 
-    std::list<Line>::iterator it = sec.getBases().begin();
-    short legthLine = (*it).getLenght();
+    short legthLine = sec.getBases().size();
     wf.write((char *)&legthLine, sizeof(short));
 
     std::string str = "";
@@ -310,13 +309,13 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
 
     while (!strBites.eof()) {
       strBites >> bytes;
-      if (bytes.size() != 8){
+      if (bytes.size() != 8) {
         int size = bytes.size();
-        for (int k = 0; k < 8 - size; k ++){
-            bytes += '0';
+        for (int k = 0; k < 8 - size; k++) {
+          bytes += '0';
         }
       }
-      std::bitset<8> bit {bytes};
+      std::bitset<8> bit{bytes};
       wf.write((char *)&bit, sizeof(bit));
     }
   }
@@ -349,6 +348,12 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   arbolcod->generarPQParaArbol(letters, frequencies);
   keyCodes.clear();
   keyCodes = arbolcod->obtenerCodigos();
+  std::map<char, std::string>::iterator itMap;
+  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
+    std::cout << itMap->first          // char con la letra (key)
+              << ':' << itMap->second  // string con el codigo
+              << std::endl;
+  }
   int cantSeq;
   rf.read((char *)&cantSeq, sizeof(cantSeq));
   short sizeName;
@@ -369,13 +374,15 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     std::string bitchar = "";
     rf.read((char *)&cantLines, sizeof(cantLines));
     rf.read((char *)&ident, sizeof(short));
-    for (int j = 0; j < cantLines; j++) {
-        rf.read((char *)&bit, sizeof(bit));
-        bitchar += bit.to_string();
-        bitchar+="\n";
-      
+    int contBases = 0;
+    std::string concatBases = "";
+    while (cantLines > contBases) {
+      rf.read((char *)&bit, sizeof(bit));
+      bitchar += bit.to_string();
+      bitchar = arbolcod->decodificar(bitchar, contBases, concatBases);
     }
-    
+    /*     std::cout << name << std::endl;
+        std::cout << concatBases << std::endl; */
     break;
   }
 }
