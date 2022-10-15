@@ -35,6 +35,7 @@ class Sequence {
   void emptyListBases();
   int countDifBases();
   void updateStruct();
+  void updateStruct(int n_lenght);
   void setBasesConcat(std::string basesConcat);
 
   // std::string setBasesConcat(std::string n_bases);
