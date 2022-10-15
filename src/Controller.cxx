@@ -294,7 +294,7 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
     short legthLine = (*itL).getLenght();
     wf.write((char *)&legthLine, sizeof(short));
 
-    long long lengthBytes = 1;
+    int lengthBytes = 1;
 
     std::string str = "";
     std::stringstream strBites;
@@ -315,7 +315,7 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
       }
     }
     std::string bytes;
-    wf.write((char *)&lengthBytes, sizeof(long long));
+    wf.write((char *)&lengthBytes, sizeof(lengthBytes));
 
     while (!strBites.eof()) {
       strBites >> bytes;
@@ -367,7 +367,7 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   std::string name;
   long long cantBases;
   short ident;
-  long long lengthBytes;
+  int lengthBytes;
 
   // se recorre el archivo dependiendo de la cantidad de secuencia
   for (int i = 0; i < cantSeq; i++) {
@@ -391,7 +391,7 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     rf.read((char *)&ident, sizeof(short));
     // se lee la cantidad de bytes en la secuenca (solo para decodificar no para
     // armar secuencia)
-    rf.read((char *)&lengthBytes, sizeof(long long));
+    rf.read((char *)&lengthBytes, sizeof(lengthBytes));
     int contBases = 0;
     std::string concatBases;
     for (int i = 0; i < lengthBytes; i++) {
