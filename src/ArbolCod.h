@@ -28,7 +28,6 @@ class ArbolCod {
       std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq);
   void generarPQParaArbol(std::vector<char> letras, std::vector<int> freq);
   void generarCodigos(NodoCod *root, std::string str);
-  std::string decodificar(std::string cod, int &contBases,
-                          std::string &basesConcat);
+  std::string decodificar(std::string cod, long long contBases);
 };
 #endif

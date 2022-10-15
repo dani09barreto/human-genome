@@ -47,6 +47,33 @@ void Sequence::updateStruct() {
 
   // updatecountBases();
 }
+void Sequence::updateStruct(int n_lenght) {
+  Line auxLine = Line();
+  // std::list<Line>::iterator itL = bases.begin();
+  std::string auxS = "";
+  int j = 0;
+  while (1) {
+    auxS = "";
+    auxS = this->basesConcat.substr(j, n_lenght);
+    j = j + n_lenght;
+    auxLine.setLine(auxS);
+    if (auxS.size() < n_lenght) {
+      auxLine.setLenght(auxS.size());
+      if (auxS.find('-') != std::string::npos) {
+        setComplete(false);
+      }
+      bases.push_back(auxLine);
+      break;
+    } else {
+      auxLine.setLenght(n_lenght);
+    }
+    if (auxS.find('-') != std::string::npos) {
+      setComplete(false);
+    }
+    bases.push_back(auxLine);
+  }
+  updatecountBases();
+}
 void Sequence::updatecountBases() {
   int aux = 0;
   countBases.clear();
@@ -79,7 +106,7 @@ int Sequence::countDifBases() {
 }
 //--------------------------------------------------------------------------------
 //--------------------------SEGUNDA
-//ENTREGA---------------------------------------
+// ENTREGA---------------------------------------
 //--------------------------------------------------------------------------------
 std::vector<int> Sequence::getVecFrequencies() { return countBases; }
 std::vector<char> Sequence::getNitrogens() { return nitrogens; }

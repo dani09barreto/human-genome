@@ -206,6 +206,10 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fa") {
+    throw Shell::SyntaxError(
+        Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FA);
+  }
 
   if (sequences.size() == 0) {
     std::cout << " No hay secuencias cargadas en memoria" << std::endl;
@@ -213,14 +217,14 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
   }
   try {
     std ::fstream outFile;
-    outFile.open(argvs[1] + ".fa", std::ios::out);
+    outFile.open(argvs[1], std::ios::out);
     for (Sequence sec : sequences) {
       outFile << sec.getName() << "\n";
       for (Line line : sec.getBases()) {
         outFile << line.getLine() << "\n";
       }
     }
-    std::cout << "Las secuencias han sido guardadas en " << argvs[1] << ".fa"
+    std::cout << "Las secuencias han sido guardadas en " << argvs[1]
               << std::endl;
   } catch (std::exception e) {
     std::cout << "Error guardando en " << argvs[1] << std::endl;
@@ -230,6 +234,10 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
 void Controller::codificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
+  }
+  if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fabin") {
+    throw Shell::SyntaxError(
+        Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FABIN);
   }
   ArbolCod *arbolCod = new ArbolCod();
   arbolCod->generarPQParaArbol(letters, frequencies);
@@ -274,20 +282,19 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   wf.write((char *)&cantSequences, sizeof(cantSequences));
 
   for (Sequence sec : sequences) {
-    short tamaNombre = sec.getName().erase(0, 1).size();
+    short tamaNombre = sec.getName().size();
     wf.write((char *)&tamaNombre, sizeof(short));
 
     for (char ch : sec.getName()) {
-      if (ch != '>') {
-        wf.write((char *)&ch, sizeof(char));
-      }
+      wf.write((char *)&ch, sizeof(char));
     }
     long long cantBases = sec.getBasesConcat().size();
-    std::cout << cantBases << std::endl;
     wf.write((char *)&cantBases, sizeof(long long));
-
-    short legthLine = sec.getBases().size();
+    std::list<Line>::iterator itL = sec.getBases().begin();
+    short legthLine = (*itL).getLenght();
     wf.write((char *)&legthLine, sizeof(short));
+
+    int lengthBytes = 1;
 
     std::string str = "";
     std::stringstream strBites;
@@ -301,12 +308,14 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
         strBites << ch;
         strBites << " ";
         contBites = 0;
+        lengthBytes++;
       } else {
         strBites << ch;
         contBites++;
       }
     }
     std::string bytes;
+    wf.write((char *)&lengthBytes, sizeof(lengthBytes));
 
     while (!strBites.eof()) {
       strBites >> bytes;
@@ -329,7 +338,8 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
-  std::ifstream rf("res.fabin", std::ios::out | std::ios::binary);
+  sequences.clear();
+  std::ifstream rf(argvs[1], std::ios::out | std::ios::binary);
   if (!rf) {
     std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
               << std::endl;
@@ -349,45 +359,60 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   arbolcod->generarPQParaArbol(letters, frequencies);
   keyCodes.clear();
   keyCodes = arbolcod->obtenerCodigos();
-  std::map<char, std::string>::iterator itMap;
-  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
-    std::cout << itMap->first          // char con la letra (key)
-              << ':' << itMap->second  // string con el codigo
-              << std::endl;
-  }
+
+  // Se recibe cantidad de secuencias en el archivo
   int cantSeq;
   rf.read((char *)&cantSeq, sizeof(cantSeq));
   short sizeName;
   std::string name;
-  long long cantLines;
+  long long cantBases;
   short ident;
+  int lengthBytes;
+
+  // se recorre el archivo dependiendo de la cantidad de secuencia
   for (int i = 0; i < cantSeq; i++) {
     name = "";
     Sequence seqAux;
+    // se recibe tamaño del nombre
     rf.read((char *)&sizeName, sizeof(sizeName));
+    // nombre secuencia
     for (int j = 0; j < sizeName; ++j) {
       char c;
+      // se recibe el nombre caracter por caracter
       rf.read((char *)&c, sizeof(char));
       name += c;
     }
     seqAux.setName(name);
     std::bitset<8> bit;
     std::string bitchar = "";
-    rf.read((char *)&cantLines, sizeof(cantLines));
-    std::cout << cantLines << std::endl;
+    // se lee la cantidad de bases en la secuencia
+    rf.read((char *)&cantBases, sizeof(cantBases));
+    // se lee la indentacion de cada linea
     rf.read((char *)&ident, sizeof(short));
+    // se lee la cantidad de bytes en la secuenca (solo para decodificar no para
+    // armar secuencia)
+    rf.read((char *)&lengthBytes, sizeof(lengthBytes));
     int contBases = 0;
-    std::string concatBases = "";
-    while (cantLines > contBases) {
+    std::string concatBases;
+    for (int i = 0; i < lengthBytes; i++) {
       rf.read((char *)&bit, sizeof(bit));
       bitchar += bit.to_string();
-      bitchar = arbolcod->decodificar(bitchar, contBases, concatBases);
-      std::cout << bitchar << "\n";
     }
-    std::cout << name << std::endl;
-    std::cout << concatBases << std::endl;
-    break;
+    // se retorna las bases concatenadas desencriptadas
+    concatBases = arbolcod->decodificar(bitchar, cantBases);
+    // std::cout << name << std::endl;
+    // std::cout << concatBases << std::endl;
+    seqAux.setBasesConcat(concatBases);
+    seqAux.updateStruct(ident);
+    // se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
+    // crear cada linea dependiendo la indentacion
+    // añadir linea a secuencia y luego añadir secuencia a la lista de
+    // secuencias
+    sequences.push_back(seqAux);
   }
+  rf.close();
+  std::cout << "Secuencias decodificadas desde " << argvs[1]
+            << " y cargadas en memoria." << std::endl;
 }
 
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
@@ -441,7 +466,7 @@ void Controller::updateFreq() {
   }
 }
 void Controller::initFreq() {
-  for (int i = 0; i < 18; i++) frequencies.push_back(0);
+  frequencies.assign(18, 0);
 }
 void Controller::fillFreq(char letter, long long cont) {
   for (int i = 0; i < 18; i++) {
