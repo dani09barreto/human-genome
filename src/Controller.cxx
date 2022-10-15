@@ -206,6 +206,10 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fa") {
+    throw Shell::SyntaxError(
+        Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FA);
+  }
 
   if (sequences.size() == 0) {
     std::cout << " No hay secuencias cargadas en memoria" << std::endl;
@@ -213,14 +217,14 @@ void Controller::guardar(Shell::argv_t argvs, Shell command) {
   }
   try {
     std ::fstream outFile;
-    outFile.open(argvs[1] + ".fa", std::ios::out);
+    outFile.open(argvs[1], std::ios::out);
     for (Sequence sec : sequences) {
       outFile << sec.getName() << "\n";
       for (Line line : sec.getBases()) {
         outFile << line.getLine() << "\n";
       }
     }
-    std::cout << "Las secuencias han sido guardadas en " << argvs[1] << ".fa"
+    std::cout << "Las secuencias han sido guardadas en " << argvs[1]
               << std::endl;
   } catch (std::exception e) {
     std::cout << "Error guardando en " << argvs[1] << std::endl;
@@ -231,6 +235,10 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  if (argvs[1].substr(argvs[1].find_last_of(".") + 1) != "fabin") {
+    throw Shell::SyntaxError(
+        Shell::SyntaxError::TypeError::EXTENSION_ERROR_FILE_FABIN);
+  }
   ArbolCod *arbolCod = new ArbolCod();
   arbolCod->generarPQParaArbol(letters, frequencies);
 
@@ -239,17 +247,18 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
   keyCodes = arbolCod->obtenerCodigos();
 
   std::map<char, std::string>::iterator itMap;
-/*   for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
-    std::cout << itMap->first          // char con la letra (key)
-              << ':' << itMap->second  // string con el codigo
-              << std::endl;
-  }
-  for (int i = 0; i < letters.size(); i++) {
-    std::cout << letters[i] << " " << frequencies[i] << std::endl;
-  } */
+  /*   for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
+      std::cout << itMap->first          // char con la letra (key)
+                << ':' << itMap->second  // string con el codigo
+                << std::endl;
+    }
+    for (int i = 0; i < letters.size(); i++) {
+      std::cout << letters[i] << " " << frequencies[i] << std::endl;
+    } */
   std::ofstream wf(argvs[1], std::ios::out | std::ios::binary);
   if (!wf) {
-    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1] << std::endl;
+    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
+              << std::endl;
     throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
   }
   short cantiDif = 0;
@@ -264,29 +273,28 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
 
   for (int i = 0; i < letters.size(); i++) {
     if (frequencies[i] != 0) {
-        wf.write((char *)&letters[i], sizeof(char));
-        long long aux = frequencies[i];
-        wf.write((char *)&aux, sizeof(long long));
+      wf.write((char *)&letters[i], sizeof(char));
+      long long aux = frequencies[i];
+      wf.write((char *)&aux, sizeof(long long));
     }
   }
 
   wf.write((char *)&cantSequences, sizeof(cantSequences));
 
   for (Sequence sec : sequences) {
-    short tamaNombre = sec.getName().erase(0, 1).size();
+    short tamaNombre = sec.getName().size();
     wf.write((char *)&tamaNombre, sizeof(short));
 
     for (char ch : sec.getName()) {
-      if (ch != '>') {
-        wf.write((char *)&ch, sizeof(char));
-      }
+      wf.write((char *)&ch, sizeof(char));
     }
-    long long cantBases = sec.getBases().size();
+    long long cantBases = sec.getBasesConcat().size();
     wf.write((char *)&cantBases, sizeof(long long));
-
-    std::list<Line>::iterator it = sec.getBases().begin();
-    short legthLine = (*it).getLenght();
+    std::list<Line>::iterator itL = sec.getBases().begin();
+    short legthLine = (*itL).getLenght();
     wf.write((char *)&legthLine, sizeof(short));
+
+    int lengthBytes = 1;
 
     std::string str = "";
     std::stringstream strBites;
@@ -295,31 +303,116 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
       str += itMap->second;
     }
     int contBites = 0;
-    for (char ch : str){
-        if (contBites == 7){
-            strBites << ch;
-            strBites << " ";
-            contBites = 0;
-        }else{
-            strBites << ch;
-            contBites ++;
-        }
+    for (char ch : str) {
+      if (contBites == 7) {
+        strBites << ch;
+        strBites << " ";
+        contBites = 0;
+        lengthBytes++;
+      } else {
+        strBites << ch;
+        contBites++;
+      }
     }
     std::string bytes;
+    wf.write((char *)&lengthBytes, sizeof(lengthBytes));
 
-    while (!strBites.eof()){
-        strBites >> bytes;
-        std::bitset <8> bit {bytes};
-        wf.write((char *)&bit, sizeof(bit));
+    while (!strBites.eof()) {
+      strBites >> bytes;
+      if (bytes.size() != 8) {
+        int size = bytes.size();
+        for (int k = 0; k < 8 - size; k++) {
+          bytes += '0';
+        }
+      }
+      std::bitset<8> bit{bytes};
+      wf.write((char *)&bit, sizeof(bit));
     }
   }
-  std::cout << "Secuencias codificadas y almacenadas en " << argvs[1] << std::endl;
+  wf.close();
+  std::cout << "Secuencias codificadas y almacenadas en " << argvs[1]
+            << std::endl;
 }
 
 void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  sequences.clear();
+  std::ifstream rf(argvs[1], std::ios::out | std::ios::binary);
+  if (!rf) {
+    std::cout << "No se pueden guardar las secuencias cargadas en " << argvs[1]
+              << std::endl;
+    throw Shell::SyntaxError(Shell::SyntaxError::TypeError::ERROR_OPEN_FILE);
+  }
+  initFreq();
+  short lenghtBases;
+  rf.read((char *)&lenghtBases, sizeof(short));
+  for (int i = 0; i < lenghtBases; i++) {
+    char base;
+    long long count;
+    rf.read((char *)&base, sizeof(char));
+    rf.read((char *)&count, sizeof(long long));
+    fillFreq(base, count);
+  }
+  ArbolCod *arbolcod = new ArbolCod();
+  arbolcod->generarPQParaArbol(letters, frequencies);
+  keyCodes.clear();
+  keyCodes = arbolcod->obtenerCodigos();
+
+  // Se recibe cantidad de secuencias en el archivo
+  int cantSeq;
+  rf.read((char *)&cantSeq, sizeof(cantSeq));
+  short sizeName;
+  std::string name;
+  long long cantBases;
+  short ident;
+  int lengthBytes;
+
+  // se recorre el archivo dependiendo de la cantidad de secuencia
+  for (int i = 0; i < cantSeq; i++) {
+    name = "";
+    Sequence seqAux;
+    // se recibe tamaño del nombre
+    rf.read((char *)&sizeName, sizeof(sizeName));
+    // nombre secuencia
+    for (int j = 0; j < sizeName; ++j) {
+      char c;
+      // se recibe el nombre caracter por caracter
+      rf.read((char *)&c, sizeof(char));
+      name += c;
+    }
+    seqAux.setName(name);
+    std::bitset<8> bit;
+    std::string bitchar = "";
+    // se lee la cantidad de bases en la secuencia
+    rf.read((char *)&cantBases, sizeof(cantBases));
+    // se lee la indentacion de cada linea
+    rf.read((char *)&ident, sizeof(short));
+    // se lee la cantidad de bytes en la secuenca (solo para decodificar no para
+    // armar secuencia)
+    rf.read((char *)&lengthBytes, sizeof(lengthBytes));
+    int contBases = 0;
+    std::string concatBases;
+    for (int i = 0; i < lengthBytes; i++) {
+      rf.read((char *)&bit, sizeof(bit));
+      bitchar += bit.to_string();
+    }
+    // se retorna las bases concatenadas desencriptadas
+    concatBases = arbolcod->decodificar(bitchar, cantBases);
+    // std::cout << name << std::endl;
+    // std::cout << concatBases << std::endl;
+    seqAux.setBasesConcat(concatBases);
+    seqAux.updateStruct(ident);
+    // se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
+    // crear cada linea dependiendo la indentacion
+    // añadir linea a secuencia y luego añadir secuencia a la lista de
+    // secuencias
+    sequences.push_back(seqAux);
+  }
+  rf.close();
+  std::cout << "Secuencias decodificadas desde " << argvs[1]
+            << " y cargadas en memoria." << std::endl;
 }
 
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
@@ -370,5 +463,13 @@ void Controller::updateFreq() {
       // Frecuencias en su letra sumele la frecuencia de la secuencia
       frequencies.at(i) = frequencies.at(i) + freq.at(i);
     }
+  }
+}
+void Controller::initFreq() {
+  frequencies.assign(18, 0);
+}
+void Controller::fillFreq(char letter, long long cont) {
+  for (int i = 0; i < 18; i++) {
+    if (letters[i] == letter) frequencies[i] = cont;
   }
 }

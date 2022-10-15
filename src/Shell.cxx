@@ -57,6 +57,12 @@ const char* Shell::SyntaxError::error() const noexcept {
     case EMPTY_FILE:
       return "no contiene ninguna secuencia.";
       break;
+    case EXTENSION_ERROR_FILE_FABIN:
+      return "El archivo debe tener extencion .fabin";
+      break;
+    case EXTENSION_ERROR_FILE_FA:
+      return "El archivo debe tener extencion .fa";
+      break;
 
     default:
       return "Comando inválido";
