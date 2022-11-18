@@ -57,7 +57,8 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command) {
       ref.addLine(line);
     }
   }
-  updateFreq();
+  updateFreqMatrix();
+  
   if (sequences.size() == 1) {
     std::cout << "1 secuencia cargada correctamente desde " << argvs[1]
               << std::endl;
@@ -188,13 +189,14 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command) {
     } while (found != -1);
     (*itSeq).setBasesConcat(sequence);
     itSeq->updateStruct();
+    itSeq->generateMatrix();
   }
 
   if (nSecuencias == 0) {
     std::cout << "La secuencia dada no existe." << std::endl;
     return;
   }
-  updateFreq();
+  updateFreqMatrix();
   if (nSecuencias == 1) {
     std::cout << "1 secuencia ha sido enmascarada." << std::endl;
     return;
@@ -416,9 +418,17 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
 }
 
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
-  if (Controller::verificationARGV(argvs, command) > 0) {
+  /*if (Controller::verificationARGV(argvs, command) > 0) {
     return;
+  }*/
+  std::list<Sequence>::iterator itSeq = sequences.begin();
+  for(;itSeq != sequences.end();itSeq++){
+    std::cout<<(*itSeq).getName()<<"\n";
+    (*itSeq).printMatrix();
+    std::cout<<"\n\n";
+    std::cout<<"BASES CONCAT: "<<(*itSeq).getBasesConcat()<<"\n";
   }
+
 }
 
 void Controller::base_remota(Shell::argv_t argvs, Shell command) {
@@ -449,13 +459,14 @@ void Controller::clear(Shell::argv_t argvs, Shell command) {
 #endif
 }
 // Funciones auxiliares segunda entrega
-void Controller::updateFreq() {
+void Controller::updateFreqMatrix() {
   frequencies.clear();
   frequencies.assign(18, 0);
   std::vector<int> freq;
   std::list<Sequence>::iterator itSeq = sequences.begin();
   itSeq = sequences.begin();
   for (int i = 0; itSeq != sequences.end(); itSeq++, i++) {
+    
     (*itSeq).updatecountBases();
     freq = (*itSeq).getVecFrequencies();
 
@@ -463,6 +474,8 @@ void Controller::updateFreq() {
       // Frecuencias en su letra sumele la frecuencia de la secuencia
       frequencies.at(i) = frequencies.at(i) + freq.at(i);
     }
+    //Generar matriz por cada secuencia
+    (*itSeq).generateMatrix();
   }
 }
 void Controller::initFreq() {

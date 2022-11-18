@@ -36,14 +36,14 @@ std::vector<Shell> commands = {
           "archivo binario \n\tnombre_archivo.fabin, que contiene una "
           "codificacion Huffman",
           2),
-    Shell("ruta_mas_corta", Controller::decodificar,
+    Shell("ruta_mas_corta", Controller::ruta_mas_corta,
           "ruta_mas_corta descripcion_secuencia i j x y",
           "imprime en pantalla la secuencia de vertices (bases) del grafo que "
           "describen la ruta mas corta \n\tentre la base ubicada en la "
           "posicion [i ,j ] de la matriz de la secuenciadescripcion_secuencia "
           "y la base ubicada \n\ten la posicion [x ,y ] de la misma matriz",
           6),
-    Shell("base_remota", Controller::Cargar,
+    Shell("base_remota", Controller::base_remota,
           "base_remota descripcion_secuencia i j",
           "busca la ubicacion de la misma base (misma letra) mas lejana dentro "
           "de la matriz",

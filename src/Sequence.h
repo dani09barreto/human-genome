@@ -6,6 +6,7 @@
 
 #include "Line.h"
 
+#define MAX 500
 class Sequence {
  protected:
   std::list<Line> bases;
@@ -17,6 +18,9 @@ class Sequence {
   std::string name;
   std::string basesConcat;
   bool complete = true;
+  int cantiCol = 50;
+  int cantiFilas = 50;
+  char matrix[MAX][MAX];
 
  public:
   Sequence(int numDifBases, bool complete, std::string name);
@@ -37,6 +41,11 @@ class Sequence {
   void updateStruct();
   void updateStruct(int n_lenght);
   void setBasesConcat(std::string basesConcat);
+
+  void updateColFilSeq(int n_cantiCol,int n_cantiFil);
+  void updateMatrix(char n_matrix[MAX][MAX]);
+  void generateMatrix();
+  void printMatrix();
 
   // std::string setBasesConcat(std::string n_bases);
 };
