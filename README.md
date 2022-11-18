@@ -22,6 +22,3 @@ g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
 ```sh
 cargar ArchivosPrueba/prueba2.fa
 ```
-```sh
-es_subsecuencia a
-```
