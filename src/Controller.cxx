@@ -426,7 +426,6 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
     std::cout<<(*itSeq).getName()<<"\n";
     (*itSeq).printMatrix();
     std::cout<<"\n\n";
-    std::cout<<"BASES CONCAT: "<<(*itSeq).getBasesConcat()<<"\n";
   }
 
 }
