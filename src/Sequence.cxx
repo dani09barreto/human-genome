@@ -104,16 +104,12 @@ int Sequence::countDifBases() {
   }
   return countDif;
 }
-//--------------------------------------------------------------------------------
-//--------------------------SEGUNDA
-// ENTREGA---------------------------------------
-//--------------------------------------------------------------------------------
+//SEGUNDA
+// ENTREGA
 std::vector<int> Sequence::getVecFrequencies() { return countBases; }
 std::vector<char> Sequence::getNitrogens() { return nitrogens; }
-//--------------------------------------------------------------------------------
-//--------------------------TERCERA
-// ENTREGA---------------------------------------
-//--------------------------------------------------------------------------------
+//TERCERA
+// ENTREGA
 void Sequence::updateColFilSeq(int n_cantiCol, int n_cantiFil) {
   cantiCol = n_cantiCol;
   cantiFilas = n_cantiFil;
