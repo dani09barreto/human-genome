@@ -29,6 +29,8 @@ class Controller {
   static void updateFreqMatrix();
   static void initFreq();
   static void fillFreq(char letter, long long cont);
+  //Funciones tercera entrega
+  static void generarGrafo();
 };
 
 #endif

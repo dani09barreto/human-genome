@@ -1,6 +1,6 @@
 /* @file Controller.cxx
  *  @authors Daniel Barreto, Santiago Gutierrez, Juan Paez
- *  @brief Proyecto Genoma Humano (Estructuras de datos 2022-3)
+ *  @brief Proyecto Genoma (Estructuras de datos 2022-3)
  */
 
 #include "Controller.h"
@@ -16,13 +16,16 @@
 
 #include "ArbolCod.h"
 #include "Sequence.h"
+#include "Grafo.h"
 
 std::list<Sequence> sequences;
 std::vector<int> frequencies;
 std::vector<char> letters = {'A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M',
                              'S', 'W', 'B', 'D', 'H', 'V', 'N', 'X', '-'};
+                             
 std::map<char, std::string> keyCodes;
-
+typedef Grafo<Coordenada> Tgrafo;
+Tgrafo grafo;
 void Controller::Cargar(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
@@ -463,7 +466,7 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
                      "," + std::to_string(coord_y) + "] no existe";
     return;
   }
-  
+
 }
 
 void Controller::base_remota(Shell::argv_t argvs, Shell command) {
@@ -517,4 +520,8 @@ void Controller::fillFreq(char letter, long long cont) {
   for (int i = 0; i < 18; i++) {
     if (letters[i] == letter) frequencies[i] = cont;
   }
+}
+//Funcione auxiliares tercera entrega
+void Controller::generarGrafo(){
+  grafo.~Grafo();
 }
