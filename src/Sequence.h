@@ -18,8 +18,8 @@ class Sequence {
   std::string name;
   std::string basesConcat;
   bool complete = true;
-  int cantiCol = 50;
-  int cantiFilas = 50;
+  int cantiCol = 0;
+  int cantiFilas = 0;
   char matrix[MAX][MAX];
 
  public:
@@ -34,6 +34,8 @@ class Sequence {
   std::string getBasesConcat();
   std::list<Line> getBases();
   bool getComplete();
+  int getCantiCol();
+  int getCantiFil();
   void updatecountBases();
   void printCountBases();
   void emptyListBases();

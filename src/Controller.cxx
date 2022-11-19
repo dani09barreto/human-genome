@@ -58,7 +58,7 @@ void Controller::Cargar(Shell::argv_t argvs, Shell command) {
     }
   }
   updateFreqMatrix();
-  
+
   if (sequences.size() == 1) {
     std::cout << "1 secuencia cargada correctamente desde " << argvs[1]
               << std::endl;
@@ -189,7 +189,7 @@ void Controller::enmascarar(Shell::argv_t argvs, Shell command) {
     } while (found != -1);
     (*itSeq).setBasesConcat(sequence);
     itSeq->updateStruct();
-    itSeq->generateMatrix();
+    // itSeq->generateMatrix();
   }
 
   if (nSecuencias == 0) {
@@ -406,6 +406,7 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
     // std::cout << concatBases << std::endl;
     seqAux.setBasesConcat(concatBases);
     seqAux.updateStruct(ident);
+    seqAux.generateMatrix();
     // se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
     // crear cada linea dependiendo la indentacion
     // añadir linea a secuencia y luego añadir secuencia a la lista de
@@ -418,16 +419,51 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
 }
 
 void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
-  /*if (Controller::verificationARGV(argvs, command) > 0) {
+  if (Controller::verificationARGV(argvs, command) > 0) {
     return;
-  }*/
-  std::list<Sequence>::iterator itSeq = sequences.begin();
-  for(;itSeq != sequences.end();itSeq++){
-    std::cout<<(*itSeq).getName()<<"\n";
-    (*itSeq).printMatrix();
-    std::cout<<"\n\n";
   }
+  std::string auxNameSeq = ">" + argvs[1];
+  std::list<Sequence>::iterator itS = sequences.begin();
+  // std::cout<<auxNameSeq;
+  bool find = false;
+  for (; itS != sequences.end(); itS++) {
+    if ((*itS).getName() == auxNameSeq) {
+      find = true;
+      break;
+    }
+  }
+  if (!find) {
+    std::cout << "La secuencia " + argvs[1] + " no existe.";
+    return;
+  }
+  std::cout << (*itS).getCantiCol() << "\n";
+  std::cout << (*itS).getCantiFil() << "\n";
+  int coord_i = std::stoi(argvs[2]);
+  int coord_j = std::stoi(argvs[3]);
 
+  if ((coord_i < 0 || coord_j < 0)) {
+    std::cout << "La base origen en la posicion [" + std::to_string(coord_i) +
+                     "," + std::to_string(coord_j) + "] no existe";
+    return;
+  }
+  if (coord_i > (*itS).getCantiCol() || coord_j > (*itS).getCantiFil()) {
+    std::cout << "La base origen en la posicion [" + std::to_string(coord_i) +
+                     "," + std::to_string(coord_j) + "] no existe";
+    return;
+  }
+  int coord_x = std::stoi(argvs[4]);
+  int coord_y = std::stoi(argvs[5]);
+  if ((coord_x < 0 || coord_y < 0)) {
+    std::cout << "La base destino en la posicion [" + std::to_string(coord_x) +
+                     "," + std::to_string(coord_y) + "] no existe";
+    return;
+  }
+  if (coord_x > (*itS).getCantiCol() || coord_y > (*itS).getCantiFil()) {
+    std::cout << "La base destino en la posicion [" + std::to_string(coord_x) +
+                     "," + std::to_string(coord_y) + "] no existe";
+    return;
+  }
+  
 }
 
 void Controller::base_remota(Shell::argv_t argvs, Shell command) {
@@ -465,7 +501,6 @@ void Controller::updateFreqMatrix() {
   std::list<Sequence>::iterator itSeq = sequences.begin();
   itSeq = sequences.begin();
   for (int i = 0; itSeq != sequences.end(); itSeq++, i++) {
-    
     (*itSeq).updatecountBases();
     freq = (*itSeq).getVecFrequencies();
 
@@ -473,13 +508,11 @@ void Controller::updateFreqMatrix() {
       // Frecuencias en su letra sumele la frecuencia de la secuencia
       frequencies.at(i) = frequencies.at(i) + freq.at(i);
     }
-    //Generar matriz por cada secuencia
+    // Generar matriz por cada secuencia
     (*itSeq).generateMatrix();
   }
 }
-void Controller::initFreq() {
-  frequencies.assign(18, 0);
-}
+void Controller::initFreq() { frequencies.assign(18, 0); }
 void Controller::fillFreq(char letter, long long cont) {
   for (int i = 0; i < 18; i++) {
     if (letters[i] == letter) frequencies[i] = cont;

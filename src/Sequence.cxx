@@ -13,7 +13,8 @@ bool Sequence::getComplete() { return complete; }
 void Sequence::setName(std::string n_name) { this->name = n_name; }
 std::list<Line> Sequence::getBases() { return (bases); }
 std::string Sequence::getName() { return (name); }
-
+int Sequence::getCantiCol() {return cantiCol;}
+int Sequence::getCantiFil() { return cantiFilas;}
 void Sequence::setBasesConcat(std::string n_basesConcat) {
   this->basesConcat = n_basesConcat;
 }
