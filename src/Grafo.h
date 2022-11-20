@@ -10,7 +10,7 @@ template <class T>
 
 class Grafo {
  protected:
-  std::map<T, std::vector<Vertice<T> > > listaAdyacencia;
+  std::map<T, std::vector<Vertice<T> >> listaAdyacencia;
 
  public:
   Grafo();
@@ -23,7 +23,7 @@ class Grafo {
 
   bool buscarVertice(T v_buscar);
   int buscarVerticeIndice(T v_buscar);
-  //Vertice<T> buscarVerticeInstancia(T v_buscar);
+  // Vertice<T> buscarVerticeInstancia(T v_buscar);
 
   bool buscarArista(T origen, T destino);
   float buscarAristaCosto(T origen, T destino);
@@ -33,9 +33,9 @@ class Grafo {
 
   // Recorridos
   void recorridoPlano();
-  void recorridoEnProfundidad(T vertice, std::vector <T> &recorrido);
-  void recorridoEnAnchura(T vertice, std::vector <T> &recorrido);
-  bool estaVisitado(std::vector <T> recorrido, T vertice);
+  void recorridoEnProfundidad(T vertice, std::vector<T> &recorrido);
+  void recorridoEnAnchura(T vertice, std::vector<T> &recorrido);
+  bool estaVisitado(std::vector<T> recorrido, T vertice);
 
   // Algoritmos
   std::vector<T> algoritmoPrim(T inicio);
@@ -44,7 +44,8 @@ class Grafo {
   void recorridoPresentacion();
   std::vector<T> obtenerListaVertices();
   bool esVacio();
-  T obtenerPuntoXIndice(long index);
+  T obtenerCoordXIndice(long index);
+  long obtenerIndiceXCoord(Coordenada c);
 };
 #include "Grafo.hxx"
 

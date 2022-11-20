@@ -2,15 +2,16 @@
 #include <iostream>
 struct Coordenada {
   long index;
-  float x, y;
+  int x, y;
   char letra;
+  
   float costTo(const Coordenada &b) const {
     float resta = (float)(1 + abs(letra - b.letra));
     float resultado = (float)(1 / resta);
     return resultado;
   }
   friend std::ostream &operator<<(std::ostream &o, const Coordenada &p) {
-    o << "[" << p.x << "," << p.y << "]";
+    o <<"Letra: "<<p.letra<< " [" << p.x << "," << p.y << ","<<p.index<<"]";
     return o;
   }
   bool operator==(const Coordenada &p) const { return (x == p.x && y == p.y); }

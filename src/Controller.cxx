@@ -14,15 +14,11 @@
 #include <sstream>
 #include <string>
 
-#include "ArbolCod.h"
-#include "Sequence.h"
-#include "Grafo.h"
-
 std::list<Sequence> sequences;
 std::vector<int> frequencies;
 std::vector<char> letters = {'A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M',
                              'S', 'W', 'B', 'D', 'H', 'V', 'N', 'X', '-'};
-                             
+
 std::map<char, std::string> keyCodes;
 typedef Grafo<Coordenada> Tgrafo;
 Tgrafo grafo;
@@ -439,8 +435,8 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
     std::cout << "La secuencia " + argvs[1] + " no existe.";
     return;
   }
-  std::cout << (*itS).getCantiCol() << "\n";
   std::cout << (*itS).getCantiFil() << "\n";
+  std::cout << (*itS).getCantiCol() << "\n";
   int coord_i = std::stoi(argvs[2]);
   int coord_j = std::stoi(argvs[3]);
 
@@ -449,7 +445,8 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
                      "," + std::to_string(coord_j) + "] no existe";
     return;
   }
-  if (coord_i > (*itS).getCantiCol() || coord_j > (*itS).getCantiFil()) {
+  if (coord_i > (*itS).getCantiFil() - 1 ||
+      coord_j > (*itS).getCantiCol() - 1) {
     std::cout << "La base origen en la posicion [" + std::to_string(coord_i) +
                      "," + std::to_string(coord_j) + "] no existe";
     return;
@@ -461,12 +458,17 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
                      "," + std::to_string(coord_y) + "] no existe";
     return;
   }
-  if (coord_x > (*itS).getCantiCol() || coord_y > (*itS).getCantiFil()) {
+  if (coord_x > (*itS).getCantiFil() - 1 ||
+      coord_y > (*itS).getCantiCol() - 1) {
     std::cout << "La base destino en la posicion [" + std::to_string(coord_x) +
                      "," + std::to_string(coord_y) + "] no existe";
     return;
   }
+  generarGrafo((*itS));
+  grafo.recorridoPresentacion();
 
+
+  std::cout << grafo.obtenerCantiAristas();
 }
 
 void Controller::base_remota(Shell::argv_t argvs, Shell command) {
@@ -521,7 +523,70 @@ void Controller::fillFreq(char letter, long long cont) {
     if (letters[i] == letter) frequencies[i] = cont;
   }
 }
-//Funcione auxiliares tercera entrega
-void Controller::generarGrafo(){
+// Funcione auxiliares tercera entrega
+void Controller::generarGrafo(Sequence seq) {
   grafo.~Grafo();
+
+  char auxMatrix[MAX][MAX];
+  seq.getMatrix(auxMatrix);
+  Coordenada auxCord;
+  int k = 0;
+  // Agregar todos los vertices, que seria agregar cada posición de la matriz
+  for (int i = 0; i < seq.getCantiFil(); i++) {
+    for (int j = 0; j < seq.getCantiCol(); j++, k++) {
+      if (auxMatrix[i][j] != '#') {
+        auxCord.index = k;
+        auxCord.x = i;
+        auxCord.y = j;
+        auxCord.letra = auxMatrix[i][j];
+        grafo.insertarVertice(auxCord);
+      }
+    }
+  }
+  //  Agregar las aristas teniendo en cuenta un posiblemente desfasamiento
+  int vIzq, vDer, vSup, vInf;
+  Coordenada vecino;
+  for (int i = 0; i < seq.getCantiFil(); i++) {
+    for (int j = 0; j < seq.getCantiCol(); j++) {
+      auxCord.x = i;
+      auxCord.y = j;
+      auxCord.letra = auxMatrix[i][j];
+
+      vSup = i - 1;
+      vInf = i + 1;
+      vIzq = j + 1;
+      vDer = j - 1;
+      if (auxMatrix[i][j] != '#') {
+        // Agregar vecino superior
+        if (vSup != -1) {
+          vecino.x = vSup;
+          vecino.y = j;
+          vecino.letra = auxMatrix[vSup][j];
+
+          grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
+        }
+        // Agregar vecino inferior
+        if (vInf < seq.getCantiFil() && auxMatrix[vInf][j] != '#') {
+          vecino.x = vInf;
+          vecino.y = j;
+          vecino.letra = auxMatrix[vInf][j];
+          grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
+        }
+        // Agregar vecino izquierdo
+        if (vIzq < seq.getCantiCol() && auxMatrix[i][vIzq] != '#') {
+          vecino.x = i;
+          vecino.y = vIzq;
+          vecino.letra = auxMatrix[i][vIzq];
+          grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
+        }
+        // Agregar vecino derecho
+        if (vDer != -1 && auxMatrix[i][vDer] != '#') {
+          vecino.x = i;
+          vecino.y = vDer;
+          vecino.letra = auxMatrix[i][vDer];
+          grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
+        }
+      }
+    }
+  }
 }

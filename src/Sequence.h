@@ -18,8 +18,8 @@ class Sequence {
   std::string name;
   std::string basesConcat;
   bool complete = true;
-  int cantiCol = 0;
-  int cantiFilas = 0;
+  int cantiCol;
+  int cantiFilas;
   char matrix[MAX][MAX];
 
  public:
@@ -48,6 +48,8 @@ class Sequence {
   void updateMatrix(char n_matrix[MAX][MAX]);
   void generateMatrix();
   void printMatrix();
+  void getMatrix(char n_matrix[MAX][MAX]);
+  
 
   // std::string setBasesConcat(std::string n_bases);
 };

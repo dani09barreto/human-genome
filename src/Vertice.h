@@ -2,6 +2,7 @@
 #define VERTICE_H
 #include <map>
 #include <vector>
+
 #include "Coordenada.h"
 
 template <class T>
@@ -22,6 +23,7 @@ class Vertice {
   //void fijarVisitado(bool n_visitado);
 
   bool operator==(const Vertice &n) const { return (vertice == n.vertice); }
+   bool operator!=(const Vertice &n) const { return (vertice != n.vertice); }
   friend std::ostream &operator<<(std::ostream &o, const Vertice &v) {
 		o <<"[ "<< v.obtenerVertice()<<" , "<<v.obtenerCosto()<<" ]";
 		return o;

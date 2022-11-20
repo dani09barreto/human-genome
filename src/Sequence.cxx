@@ -13,8 +13,8 @@ bool Sequence::getComplete() { return complete; }
 void Sequence::setName(std::string n_name) { this->name = n_name; }
 std::list<Line> Sequence::getBases() { return (bases); }
 std::string Sequence::getName() { return (name); }
-int Sequence::getCantiCol() {return cantiCol;}
-int Sequence::getCantiFil() { return cantiFilas;}
+int Sequence::getCantiCol() { return cantiCol; }
+int Sequence::getCantiFil() { return cantiFilas; }
 void Sequence::setBasesConcat(std::string n_basesConcat) {
   this->basesConcat = n_basesConcat;
 }
@@ -105,12 +105,12 @@ int Sequence::countDifBases() {
   }
   return countDif;
 }
-//SEGUNDA
-// ENTREGA
+// SEGUNDA
+//  ENTREGA
 std::vector<int> Sequence::getVecFrequencies() { return countBases; }
 std::vector<char> Sequence::getNitrogens() { return nitrogens; }
-//TERCERA
-// ENTREGA
+// TERCERA
+//  ENTREGA
 void Sequence::updateColFilSeq(int n_cantiCol, int n_cantiFil) {
   cantiCol = n_cantiCol;
   cantiFilas = n_cantiFil;
@@ -123,17 +123,19 @@ void Sequence::updateMatrix(char n_matrix[MAX][MAX]) {
   }
 }
 void Sequence::generateMatrix() {
-  updateColFilSeq(bases.front().getLenght(), bases.size()); //Actualizar cantidad de columnas y filas
+  updateColFilSeq(bases.front().getLenght(),
+                  bases.size());  // Actualizar cantidad de columnas y filas
   int k = 0;
   for (int i = 0; i < cantiFilas; i++) {
-    for (int j = 0; j < cantiCol; j++, k++){
-      if (k >= basesConcat.size() ) { //Si ya se acabó la secuencia agregar caracter default #
+    for (int j = 0; j < cantiCol; j++, k++) {
+      if (k >= basesConcat.size()) {  // Si ya se acabó la secuencia agregar
+                                      // caracter default #
         matrix[i][j] = '#';
       } else {
-        matrix[i][j] = basesConcat[k]; // Si no, seguir agregando a la matriz
+        matrix[i][j] = basesConcat[k];  // Si no, seguir agregando a la matriz
       }
+    }
   }
-}
 }
 void Sequence::printMatrix() {
   for (int i = 0; i < cantiFilas; i++) {
@@ -141,5 +143,12 @@ void Sequence::printMatrix() {
       std::cout << matrix[i][j] << " ";
     }
     std::cout << "\n";
+  }
+}
+void Sequence::getMatrix(char c_matrix[MAX][MAX]) {
+  for (int i = 0; i < cantiFilas; i++) {
+    for (int j = 0; j < cantiCol; j++) {
+      c_matrix[i][j] = matrix[i][j];
+    }
   }
 }

@@ -22,3 +22,6 @@ g++ -std=c++11 -g -o ejecutableD  *.cxx *.cpp
 ```sh
 cargar ArchivosPrueba/prueba2.fa
 ```
+```sh
+ruta_mas_corta Cow 1 2 3 4
+```

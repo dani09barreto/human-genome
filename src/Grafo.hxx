@@ -10,7 +10,7 @@ template <class T>
 Grafo<T>::Grafo() {}
 template <class T>
 Grafo<T>::~Grafo() {
-	listaAdyacencia.clear();
+  listaAdyacencia.clear();
 }
 template <class T>
 int Grafo<T>::obtenerCantiVertices() {
@@ -42,15 +42,19 @@ template <class T>
 bool Grafo<T>::insertarArista(T origen, T destino, float costo) {
   bool origenExiste = false;
   bool destinoExiste = false;
-  typename std::map<T, std::vector<Vertice<T>>>::iterator it;
+
+  typename std::map<T, std::vector<Vertice<T>>>::iterator it =
+      listaAdyacencia.begin();
   if (this->buscarVertice(origen)) {
     origenExiste = true;
-    it = listaAdyacencia.find(origen);
+    for (int i = 0; i < obtenerIndiceXCoord(origen); i++, it++)
+      ;
   }
   if (buscarVertice(destino)) {
     destinoExiste = true;
   }
-  // 1. Verificar que el vertice origen y destino estan en el grafo.
+
+  //  1. Verificar que el vertice origen y destino estan en el grafo.
   if (origenExiste && destinoExiste) {
     Vertice<T> auxVertice(destino, costo);
 
@@ -204,17 +208,17 @@ void Grafo<T>::recorridoPlano() {
     std::cout << vec.at(i) << "\n";
   }
 }
-
 template <class T>
 void Grafo<T>::recorridoEnProfundidad(T vertice, std::vector<T> &recorrido) {
   if (!this->buscarVertice(vertice)) {
     return;
   }
   recorrido.push_back(vertice);
-  typename std::map<T, std::vector<Vertice<T> > >::iterator it =
+  typename std::map<T, std::vector<Vertice<T>>>::iterator it =
       listaAdyacencia.find(vertice);
   std::vector<Vertice<T>> aristas = it->second;
-  typename std::priority_queue<Vertice<T>, std::vector<Vertice<T> >, CompareVertice<T> >
+  typename std::priority_queue<Vertice<T>, std::vector<Vertice<T>>,
+                               CompareVertice<T>>
       pq;
   for (int i = 0; i < aristas.size(); i++) {
     pq.push(aristas[i]);
@@ -228,7 +232,6 @@ void Grafo<T>::recorridoEnProfundidad(T vertice, std::vector<T> &recorrido) {
     }
   }
 }
-
 template <class T>
 void Grafo<T>::recorridoEnAnchura(T vertice, std::vector<T> &recorrido) {
   if (!this->buscarVertice(vertice)) {
@@ -262,7 +265,6 @@ void Grafo<T>::recorridoEnAnchura(T vertice, std::vector<T> &recorrido) {
     }
   }
 }
-
 template <class T>
 bool Grafo<T>::estaVisitado(std::vector<T> recorrido, T vertice) {
   for (int i = 0; i < recorrido.size(); i++) {
@@ -325,7 +327,6 @@ std::vector<T> Grafo<T>::algoritmoPrim(T inicio) {
   }
   return conexiones;
 }
-
 template <class T>
 std::map<T, T> Grafo<T>::algoritmoDijkstra(T inicio) {
   typename std::map<T, std::vector<Vertice<T>>>::iterator it =
@@ -370,7 +371,6 @@ std::map<T, T> Grafo<T>::algoritmoDijkstra(T inicio) {
     std::cout << "Vertice de inicio no existe!\n";
   }
 }
-
 template <class T>
 void Grafo<T>::recorridoPresentacion() {
   typename std::map<T, std::vector<Vertice<T>>>::iterator it =
@@ -388,10 +388,22 @@ bool Grafo<T>::esVacio() {
   return this->listaAdyacencia.empty();
 }
 template <class T>
-T Grafo<T>::obtenerPuntoXIndice(long index) {
+T Grafo<T>::obtenerCoordXIndice(long index) {
   typename std::map<T, std::vector<Vertice<T>>>::iterator it =
       listaAdyacencia.begin();
   for (long i = 0; i < index; i++, it++)
     ;
   return it->first;
+}
+template <class T>
+long Grafo<T>::obtenerIndiceXCoord(Coordenada c) {
+  int i = 0;
+  typename std::map<T, std::vector<Vertice<T>>>::iterator it =
+      listaAdyacencia.begin();
+  for (; it != listaAdyacencia.end(); it++, i++) {
+    if ((*it).first == c) {
+      return i;
+    }
+  }
+  return -1;
 }

@@ -7,7 +7,9 @@
 #define CONTROLLER_H
 
 #include "Shell.h"
-
+#include "ArbolCod.h"
+#include "Sequence.h"
+#include "Grafo.h"
 class Controller {
   /*----Metodos (comando que ejecuta el shell)----*/
  public:
@@ -30,7 +32,7 @@ class Controller {
   static void initFreq();
   static void fillFreq(char letter, long long cont);
   //Funciones tercera entrega
-  static void generarGrafo();
+  static void generarGrafo(Sequence seq);
 };
 
 #endif
