@@ -12,6 +12,7 @@
 #include <list>
 #include <map>
 #include <sstream>
+#include <stack>
 #include <string>
 
 std::list<Sequence> sequences;
@@ -502,14 +503,39 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
     return;
   }
   generarGrafo((*itS));
-  std::cout<<coord_i<<" "<<coord_j<<"\n";
-  Coordenada aux = grafo.obtenerCoordenada(coord_i,coord_j);
-  std::map<Coordenada, Coordenada> Predecesores = grafo.algoritmoDijkstra(aux);
-  typename std::map<Coordenada, Coordenada>::iterator it = Predecesores.begin();
-  for(;it != Predecesores.end();it++){
-    std::cout<<it->first<<" -> "<<it->second<<std::endl;
+  Coordenada aux = grafo.obtenerCoordenada(coord_i, coord_j);
+  std::cout << coord_i << " " << coord_j << "\n";
+  std::vector<Coordenada> lista = grafo.obtenerListaVertices();
+  float mayor = 0;
+  float dist;
+  float X, Y;
+  Coordenada lejano;
+  for (int i = 0; i < lista.size(); i++) {
+    if (lista[i].letra == aux.letra) {
+      X = lista[i].x - aux.x;
+      Y = lista[i].y - aux.y;
+      dist = sqrt((X * X) + (Y * Y));
+      if (dist > mayor) {
+        mayor = dist;
+        lejano = lista[i];
+      }
+    }
   }
-  
+  std::cout << lejano << "\n";
+  std::map<Coordenada, float> costo;
+  std::map<Coordenada, Coordenada> Predecesores =
+      grafo.algoritmoDijkstra(aux, costo);
+  float costoR = costo[lejano];
+  std::vector<Coordenada> ruta = rutaCostoMinimo(lejano, Predecesores);
+  std::cout << "Para la secuencia " << (*itS).getName()
+            << " , la base remota esta ubicada en [" << lejano.x << ","
+            << lejano.y << "], y la ruta entre la base en [" << aux.x << ","
+            << aux.y << "] y la base remota en [" << lejano.x << "," << lejano.y
+            << "] es:\n";
+  for (int i = 0; i < ruta.size(); i++) {
+    std::cout << ruta[i] << "->";
+  }
+  std::cout << "\nEl costo total de la ruta es: " << costo[lejano] << "\n";
 }
 
 int Controller::verificationARGV(Shell::argv_t argvs, Shell command) {
@@ -596,26 +622,48 @@ void Controller::generarGrafo(Sequence seq) {
       if (auxMatrix[i][j] != '#') {
         // Agregar vecino superior
         if (vSup != -1) {
-          vecino = grafo.obtenerCoordenada(vSup,j);
+          vecino = grafo.obtenerCoordenada(vSup, j);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
         // Agregar vecino inferior
         if (vInf < seq.getCantiFil() && auxMatrix[vInf][j] != '#') {
-          
-          vecino = grafo.obtenerCoordenada(vInf,j);
+          vecino = grafo.obtenerCoordenada(vInf, j);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
         // Agregar vecino izquierdo
         if (vIzq < seq.getCantiCol() && auxMatrix[i][vIzq] != '#') {
-          vecino = grafo.obtenerCoordenada(i,vIzq);
+          vecino = grafo.obtenerCoordenada(i, vIzq);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
         // Agregar vecino derecho
         if (vDer != -1 && auxMatrix[i][vDer] != '#') {
-          vecino = grafo.obtenerCoordenada(i,vDer);
+          vecino = grafo.obtenerCoordenada(i, vDer);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
       }
     }
   }
+}
+
+std::vector<Coordenada> Controller::rutaCostoMinimo(
+    Coordenada end_id, std::map<Coordenada, Coordenada> predecesores) {
+  std::stack<Coordenada> pila;
+  std::vector<Coordenada> ruta;
+  Coordenada it = predecesores[end_id];
+
+  while (true) {
+    if (it == predecesores[it]) {
+      pila.push(it);
+      break;
+    }
+    pila.push(it);
+    it = predecesores[it];
+  }
+
+  while (!pila.empty()) {
+    ruta.push_back(pila.top());
+    pila.pop();
+  }
+
+  return ruta;
 }
