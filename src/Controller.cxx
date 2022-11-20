@@ -548,10 +548,12 @@ void Controller::generarGrafo(Sequence seq) {
   Coordenada vecino;
   for (int i = 0; i < seq.getCantiFil(); i++) {
     for (int j = 0; j < seq.getCantiCol(); j++) {
+      auxCord = grafo.obtenerCoordenada(i,j);
+      /*
       auxCord.x = i;
       auxCord.y = j;
-      auxCord.letra = auxMatrix[i][j];
-
+      auxCord.letra = auxMatrix[i][j];*/
+      
       vSup = i - 1;
       vInf = i + 1;
       vIzq = j + 1;

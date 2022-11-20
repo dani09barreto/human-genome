@@ -46,6 +46,7 @@ class Grafo {
   bool esVacio();
   T obtenerCoordXIndice(long index);
   long obtenerIndiceXCoord(Coordenada c);
+  Coordenada obtenerCoordenada(int i, int j);
 };
 #include "Grafo.hxx"
 

@@ -43,12 +43,10 @@ bool Grafo<T>::insertarArista(T origen, T destino, float costo) {
   bool origenExiste = false;
   bool destinoExiste = false;
 
-  typename std::map<T, std::vector<Vertice<T>>>::iterator it =
-      listaAdyacencia.begin();
+  typename std::map<T, std::vector<Vertice<T>>>::iterator it;
   if (this->buscarVertice(origen)) {
     origenExiste = true;
-    for (int i = 0; i < obtenerIndiceXCoord(origen); i++, it++)
-      ;
+    it = listaAdyacencia.find(origen);
   }
   if (buscarVertice(destino)) {
     destinoExiste = true;
@@ -406,4 +404,14 @@ long Grafo<T>::obtenerIndiceXCoord(Coordenada c) {
     }
   }
   return -1;
+}
+template <class T>
+Coordenada Grafo<T>::obtenerCoordenada(int i, int j){
+  typename std::map<T, std::vector<Vertice<T>>>::iterator it =
+      listaAdyacencia.begin();
+  for(;it != listaAdyacencia.end();it++){
+    if(it->first.x == i && it->first.y == j){
+      return it->first;
+    }
+  }
 }
