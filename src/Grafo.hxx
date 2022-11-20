@@ -330,6 +330,9 @@ std::map<T, T> Grafo<T>::algoritmoDijkstra(T inicio) {
   typename std::map<T, std::vector<Vertice<T>>>::iterator it =
       listaAdyacencia.find(inicio);
   if (it != this->listaAdyacencia.end()) {
+    for(int i=0;i<it->second.size();i++){
+      std::cout<<it->second[i]<<"\n";
+    }
     std::map<T, T> Predecesores;
     std::map<T, int> costo;
     std::vector<T> Cola = this->obtenerListaVertices();

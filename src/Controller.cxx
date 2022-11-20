@@ -467,7 +467,6 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
   generarGrafo((*itS));
   grafo.recorridoPresentacion();
 
-
   std::cout << grafo.obtenerCantiAristas();
 }
 
@@ -475,6 +474,42 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
   if (Controller::verificationARGV(argvs, command) > 0) {
     return;
   }
+  std::string auxNameSeq = ">" + argvs[1];
+  std::list<Sequence>::iterator itS = sequences.begin();
+  bool find = false;
+  for (; itS != sequences.end(); itS++) {
+    if ((*itS).getName() == auxNameSeq) {
+      find = true;
+      break;
+    }
+  }
+  if (!find) {
+    std::cout << "La secuencia " + argvs[1] + " no existe.";
+    return;
+  }
+  int coord_i = std::stoi(argvs[2]);
+  int coord_j = std::stoi(argvs[3]);
+
+  if ((coord_i < 0 || coord_j < 0)) {
+    std::cout << "La base origen en la posicion [" + std::to_string(coord_i) +
+                     "," + std::to_string(coord_j) + "] no existe";
+    return;
+  }
+  if (coord_i > (*itS).getCantiFil() - 1 ||
+      coord_j > (*itS).getCantiCol() - 1) {
+    std::cout << "La base origen en la posicion [" + std::to_string(coord_i) +
+                     "," + std::to_string(coord_j) + "] no existe";
+    return;
+  }
+  generarGrafo((*itS));
+  std::cout<<coord_i<<" "<<coord_j<<"\n";
+  Coordenada aux = grafo.obtenerCoordenada(coord_i,coord_j);
+  std::map<Coordenada, Coordenada> Predecesores = grafo.algoritmoDijkstra(aux);
+  typename std::map<Coordenada, Coordenada>::iterator it = Predecesores.begin();
+  for(;it != Predecesores.end();it++){
+    std::cout<<it->first<<" -> "<<it->second<<std::endl;
+  }
+  
 }
 
 int Controller::verificationARGV(Shell::argv_t argvs, Shell command) {
@@ -548,12 +583,12 @@ void Controller::generarGrafo(Sequence seq) {
   Coordenada vecino;
   for (int i = 0; i < seq.getCantiFil(); i++) {
     for (int j = 0; j < seq.getCantiCol(); j++) {
-      auxCord = grafo.obtenerCoordenada(i,j);
+      auxCord = grafo.obtenerCoordenada(i, j);
       /*
       auxCord.x = i;
       auxCord.y = j;
       auxCord.letra = auxMatrix[i][j];*/
-      
+
       vSup = i - 1;
       vInf = i + 1;
       vIzq = j + 1;
@@ -561,31 +596,23 @@ void Controller::generarGrafo(Sequence seq) {
       if (auxMatrix[i][j] != '#') {
         // Agregar vecino superior
         if (vSup != -1) {
-          vecino.x = vSup;
-          vecino.y = j;
-          vecino.letra = auxMatrix[vSup][j];
-
+          vecino = grafo.obtenerCoordenada(vSup,j);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
         // Agregar vecino inferior
         if (vInf < seq.getCantiFil() && auxMatrix[vInf][j] != '#') {
-          vecino.x = vInf;
-          vecino.y = j;
-          vecino.letra = auxMatrix[vInf][j];
+          
+          vecino = grafo.obtenerCoordenada(vInf,j);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
         // Agregar vecino izquierdo
         if (vIzq < seq.getCantiCol() && auxMatrix[i][vIzq] != '#') {
-          vecino.x = i;
-          vecino.y = vIzq;
-          vecino.letra = auxMatrix[i][vIzq];
+          vecino = grafo.obtenerCoordenada(i,vIzq);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
         // Agregar vecino derecho
         if (vDer != -1 && auxMatrix[i][vDer] != '#') {
-          vecino.x = i;
-          vecino.y = vDer;
-          vecino.letra = auxMatrix[i][vDer];
+          vecino = grafo.obtenerCoordenada(i,vDer);
           grafo.insertarArista(auxCord, vecino, auxCord.costTo(vecino));
         }
       }
