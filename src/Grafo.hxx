@@ -329,8 +329,9 @@ template <class T>
 std::map<T, T> Grafo<T>::algoritmoDijkstra(T inicio,std::map<T, float> &costo) {
   typename std::map<T, std::vector<Vertice<T>>>::iterator it =
       listaAdyacencia.find(inicio);
+      std::map<T, T> Predecesores;
   if (it != this->listaAdyacencia.end()) {
-    std::map<T, T> Predecesores;    
+        
     std::vector<T> Cola = this->obtenerListaVertices();
     int menor, pos;
     T vertice;
@@ -364,9 +365,10 @@ std::map<T, T> Grafo<T>::algoritmoDijkstra(T inicio,std::map<T, float> &costo) {
       Cola.erase(Cola.begin() + pos);
     }
     return Predecesores;
-  } else {
+  } /*else {
     std::cout << "Vertice de inicio no existe!\n";
-  }
+  }*/
+  return Predecesores;
 }
 template <class T>
 void Grafo<T>::recorridoPresentacion() {
@@ -413,4 +415,5 @@ Coordenada Grafo<T>::obtenerCoordenada(int i, int j){
       return it->first;
     }
   }
+  return it->first;
 }

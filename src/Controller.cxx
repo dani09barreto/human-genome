@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stack>
 #include <string>
+#include <algorithm>
 
 std::list<Sequence> sequences;
 std::vector<int> frequencies;
@@ -466,9 +467,26 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
     return;
   }
   generarGrafo((*itS));
-  grafo.recorridoPresentacion();
-
-  std::cout << grafo.obtenerCantiAristas();
+  // grafo.recorridoPresentacion();
+  Coordenada inicioCord = grafo.obtenerCoordenada(coord_i, coord_j);
+  std::map<Coordenada, float> costo;
+  std::map<Coordenada, Coordenada> rutaDijkstra =
+      grafo.algoritmoDijkstra(inicioCord, costo);
+  Coordenada destinoCord = grafo.obtenerCoordenada(coord_x, coord_y);
+  float costoRuta = costo[destinoCord];
+  std::vector<Coordenada> rutaOptima =
+      rutaCostoMinimo(destinoCord, rutaDijkstra);
+  std::string nombre = (*itS).getName();
+  nombre.at(0) = ' ';
+  std::cout << "Para la secuencia" + nombre +
+                   ", la ruta mas corta entre \nla base en ["
+            << coord_i << "," << coord_j << "] y la base en [" << coord_x << ","
+            << coord_y << "] es: ";
+  for (int i = 0; i < rutaOptima.size(); i++) {
+    std::cout << rutaOptima.at(i) << " -> ";
+  }
+  std::cout<<destinoCord;
+  std::cout<<"\n\nEl costo total de la ruta es: "<<costoRuta<<"\n";
 }
 
 void Controller::base_remota(Shell::argv_t argvs, Shell command) {
@@ -527,7 +545,9 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
       grafo.algoritmoDijkstra(aux, costo);
   float costoR = costo[lejano];
   std::vector<Coordenada> ruta = rutaCostoMinimo(lejano, Predecesores);
-  std::cout << "Para la secuencia " << (*itS).getName()
+  std::string nombre = (*itS).getName();
+  nombre.at(0) = ' ';
+  std::cout << "Para la secuencia" << nombre
             << " , la base remota esta ubicada en [" << lejano.x << ","
             << lejano.y << "], y la ruta entre la base en [" << aux.x << ","
             << aux.y << "] y la base remota en [" << lejano.x << "," << lejano.y
@@ -535,7 +555,8 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
   for (int i = 0; i < ruta.size(); i++) {
     std::cout << ruta[i] << "->";
   }
-  std::cout << "\nEl costo total de la ruta es: " << costo[lejano] << "\n";
+  std::cout<<lejano;
+  std::cout << "\n\nEl costo total de la ruta es: " << costo[lejano] << "\n";
 }
 
 int Controller::verificationARGV(Shell::argv_t argvs, Shell command) {
@@ -610,11 +631,6 @@ void Controller::generarGrafo(Sequence seq) {
   for (int i = 0; i < seq.getCantiFil(); i++) {
     for (int j = 0; j < seq.getCantiCol(); j++) {
       auxCord = grafo.obtenerCoordenada(i, j);
-      /*
-      auxCord.x = i;
-      auxCord.y = j;
-      auxCord.letra = auxMatrix[i][j];*/
-
       vSup = i - 1;
       vInf = i + 1;
       vIzq = j + 1;
