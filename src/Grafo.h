@@ -39,7 +39,7 @@ class Grafo {
 
   // Algoritmos
   std::vector<T> algoritmoPrim(T inicio);
-  std::map<T, T> algoritmoDijkstra(T inicio);
+  std::map<T, T> algoritmoDijkstra(T inicio,std::map<T, float> &costo);
 
   void recorridoPresentacion();
   std::vector<T> obtenerListaVertices();
