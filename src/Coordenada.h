@@ -11,7 +11,7 @@ struct Coordenada {
     return resultado;
   }
   friend std::ostream &operator<<(std::ostream &o, const Coordenada &p) {
-    o <<"Letra: "<<p.letra<< " [" << p.x << "," << p.y << ","<<p.index<<"]";
+    o <<p.letra<< " [" << p.x << "," << p.y <<"]";
     return o;
   }
   bool operator==(const Coordenada &p) const { return (x == p.x && y == p.y); }

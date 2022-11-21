@@ -481,12 +481,12 @@ void Controller::ruta_mas_corta(Shell::argv_t argvs, Shell command) {
   std::cout << "Para la secuencia" + nombre +
                    ", la ruta mas corta entre \nla base en ["
             << coord_i << "," << coord_j << "] y la base en [" << coord_x << ","
-            << coord_y << "] es: ";
+            << coord_y << "] es: \n";
   for (int i = 0; i < rutaOptima.size(); i++) {
-    std::cout << rutaOptima.at(i) << " -> ";
+    std::cout << rutaOptima.at(i) << "\n";
   }
-  std::cout<<destinoCord;
-  std::cout<<"\n\nEl costo total de la ruta es: "<<costoRuta<<"\n";
+  std::cout<<destinoCord<<"\n";
+  std::cout<<"\nEl costo total de la ruta es: "<<costoRuta<<"\n";
 }
 
 void Controller::base_remota(Shell::argv_t argvs, Shell command) {
@@ -539,7 +539,7 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
       }
     }
   }
-  std::cout << lejano << "\n";
+  //std::cout << lejano << "\n";
   std::map<Coordenada, float> costo;
   std::map<Coordenada, Coordenada> Predecesores =
       grafo.algoritmoDijkstra(aux, costo);
@@ -548,12 +548,12 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
   std::string nombre = (*itS).getName();
   nombre.at(0) = ' ';
   std::cout << "Para la secuencia" << nombre
-            << " , la base remota esta ubicada en [" << lejano.x << ","
+            << ", la base remota esta ubicada en [" << lejano.x << ","
             << lejano.y << "], y la ruta entre la base en [" << aux.x << ","
             << aux.y << "] y la base remota en [" << lejano.x << "," << lejano.y
             << "] es:\n";
   for (int i = 0; i < ruta.size(); i++) {
-    std::cout << ruta[i] << "->";
+    std::cout << ruta[i] << "\n";
   }
   std::cout<<lejano;
   std::cout << "\n\nEl costo total de la ruta es: " << costo[lejano] << "\n";
