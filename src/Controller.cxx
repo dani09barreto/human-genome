@@ -533,7 +533,7 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
             << aux.y << "] y la base remota en [" << lejano.x << "," << lejano.y
             << "] es:\n";
   for (int i = 0; i < ruta.size(); i++) {
-    std::cout << ruta[i] << "->";
+    std::cout << ruta[i].letra;
   }
   std::cout << "\nEl costo total de la ruta es: " << costo[lejano] << "\n";
 }
