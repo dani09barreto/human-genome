@@ -115,7 +115,7 @@ void Sequence::updateColFilSeq(int n_cantiCol, int n_cantiFil) {
   cantiCol = n_cantiCol;
   cantiFilas = n_cantiFil;
 }
-void Sequence::updateMatrix(char n_matrix[MAX][MAX]) {
+void Sequence::updateMatrix(std::map<int, std::map<int, char>> n_matrix) {
   for (int i = 0; i < cantiFilas; i++) {
     for (int j = 0; j < cantiCol; j++) {
       matrix[i][j] = n_matrix[i][j];
@@ -145,7 +145,7 @@ void Sequence::printMatrix() {
     std::cout << "\n";
   }
 }
-void Sequence::getMatrix(char c_matrix[MAX][MAX]) {
+void Sequence::getMatrix(std::map<int, std::map<int, char>> &c_matrix) {
   for (int i = 0; i < cantiFilas; i++) {
     for (int j = 0; j < cantiCol; j++) {
       c_matrix[i][j] = matrix[i][j];

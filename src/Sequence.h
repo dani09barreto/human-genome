@@ -3,6 +3,7 @@
 
 #include <list>
 #include <vector>
+#include<map>
 
 #include "Line.h"
 
@@ -20,7 +21,8 @@ class Sequence {
   bool complete = true;
   int cantiCol;
   int cantiFilas;
-  char matrix[MAX][MAX];
+  //char matrix[MAX][MAX];
+  std::map<int, std::map<int, char>> matrix;
 
  public:
   Sequence(int numDifBases, bool complete, std::string name);
@@ -45,10 +47,10 @@ class Sequence {
   void setBasesConcat(std::string basesConcat);
 
   void updateColFilSeq(int n_cantiCol,int n_cantiFil);
-  void updateMatrix(char n_matrix[MAX][MAX]);
+  void updateMatrix(std::map<int, std::map<int, char>> n_matrix);
   void generateMatrix();
   void printMatrix();
-  void getMatrix(char n_matrix[MAX][MAX]);
+  void getMatrix(std::map<int, std::map<int, char>> &n_matrix);
   
 
   // std::string setBasesConcat(std::string n_bases);

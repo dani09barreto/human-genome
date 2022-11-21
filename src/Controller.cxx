@@ -609,8 +609,15 @@ void Controller::fillFreq(char letter, long long cont) {
 void Controller::generarGrafo(Sequence seq) {
   grafo.~Grafo();
 
-  char auxMatrix[MAX][MAX];
+  std::map<int, std::map<int, char>> auxMatrix;
   seq.getMatrix(auxMatrix);
+  std::map<int, std::map<int, char>>::iterator it = auxMatrix.begin();
+   for(int i = 0;i<auxMatrix.size();i++,it++){
+        for(int j=0;j<it->second.size();j++){
+            std::cout<<auxMatrix[i][j];
+        }
+        std::cout<<"\n";
+    }
   Coordenada auxCord;
   int k = 0;
   // Agregar todos los vertices, que seria agregar cada posición de la matriz
