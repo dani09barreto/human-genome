@@ -548,7 +548,7 @@ void Controller::base_remota(Shell::argv_t argvs, Shell command) {
   std::string nombre = (*itS).getName();
   nombre.at(0) = ' ';
   std::cout << "Para la secuencia" << nombre
-            << ", la base remota esta ubicada en [" << lejano.x << ","
+            << ", la base remota esta ubicada\nen [" << lejano.x << ","
             << lejano.y << "], y la ruta entre la base en [" << aux.x << ","
             << aux.y << "] y la base remota en [" << lejano.x << "," << lejano.y
             << "] es:\n";
