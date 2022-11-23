@@ -26,35 +26,36 @@ void Manager::init() {
     std::string token;
     // Separarlo para luego tokenizarlo en un vector
     while (std::getline(str_stream, token, ' ')) tokens.push_back(token);
+    if (token.size() != 0) {
+      try {
+        for (Shell shell : this->commands) {
+          // Evaluar si el comando existe
+          if (shell.getCommand() == tokens[0]) {
+            detected = true;
+            shell.call(tokens, shell);
+          } else if (shell.getCommand() == tokens[1]) {
+            detected = true;
+            shell.call(tokens, shell);
+          }
 
-    try {
-      for (Shell shell : this->commands) {
-        // Evaluar si el comando existe
-        if (shell.getCommand() == tokens[0]) {
-          detected = true;
-          shell.call(tokens, shell);
-        } else if (shell.getCommand() == tokens[1]) {
-          detected = true;
-          shell.call(tokens, shell);
+          if (tokens[0].compare("ayuda") == 0 && tokens.size() == 1) {
+            this->commandHelp();
+            detected = true;
+            break;
+          }
         }
-
-        if (tokens[0].compare("ayuda") == 0 && tokens.size() == 1) {
-          this->commandHelp();
-          detected = true;
-          break;
-        }
+        if (!detected)
+          throw Shell::SyntaxError(
+              Shell::SyntaxError::TypeError::COMMAND_DONT_EXIST);
+      } catch (Shell::SyntaxError& e) {  // excepciones generadas en la
+                                         // compilacion
+        std::cout << "[Error]: " << e.error();
+      } catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
       }
-      if (!detected)
-        throw Shell::SyntaxError(
-            Shell::SyntaxError::TypeError::COMMAND_DONT_EXIST);
-    } catch (Shell::SyntaxError& e) {  // excepciones generadas en la
-                                       // compilacion
-      std::cout << "[Error]: " << e.error();
-    } catch (const std::exception& e) {
-      std::cerr << e.what() << '\n';
-    }
 
-    detected = false;
+      detected = false;
+    }
   }
 }
 
