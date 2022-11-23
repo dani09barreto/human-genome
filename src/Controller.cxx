@@ -346,13 +346,6 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   arbolcod->generarPQParaArbol(letters, frequencies);
   keyCodes.clear();
   keyCodes = arbolcod->obtenerCodigos();
-
-  std::map<char, std::string>::iterator itMap;
-  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
-    std::cout << itMap->first          // char con la letra (key)
-              << ':' << itMap->second  // string con el codigo
-              << std::endl;
-  }
   // Se recibe cantidad de secuencias en el archivo
   int cantSeq;
   rf.read((char *)&cantSeq, sizeof(cantSeq));
