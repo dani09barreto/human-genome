@@ -292,44 +292,28 @@ void Controller::codificar(Shell::argv_t argvs, Shell command) {
       wf.write((char *)&ch, sizeof(char));
     }
     long long cantBases = sec.getBasesConcat().size();
-    wf.write((char *)&cantBases, sizeof(long long));
+    wf.write((char *)&cantBases, sizeof(cantBases));
     std::list<Line>::iterator itL = sec.getBases().begin();
     short legthLine = (*itL).getLenght();
     wf.write((char *)&legthLine, sizeof(short));
 
-    int lengthBytes = 1;
-
     std::string str = "";
-    std::stringstream strBites;
     for (char ch : sec.getBasesConcat()) {
       itMap = keyCodes.find(ch);
       str += itMap->second;
     }
-    int contBites = 0;
+    unsigned char byte = 0;
+    int cont = 0;
     for (char ch : str) {
-      if (contBites == 7) {
-        strBites << ch;
-        strBites << " ";
-        contBites = 0;
-        lengthBytes++;
-      } else {
-        strBites << ch;
-        contBites++;
+      byte += (ch == '1') ? (pow(2, (7 - cont % 8))) : 0;
+      cont++;
+      if (cont % 8 == 0) {
+        wf.write((char *)&byte, sizeof(byte));
+        byte = 0;
       }
     }
-    std::string bytes;
-    wf.write((char *)&lengthBytes, sizeof(lengthBytes));
-
-    while (!strBites.eof()) {
-      strBites >> bytes;
-      if (bytes.size() != 8) {
-        int size = bytes.size();
-        for (int k = 0; k < 8 - size; k++) {
-          bytes += '0';
-        }
-      }
-      std::bitset<8> bit{bytes};
-      wf.write((char *)&bit, sizeof(bit));
+    if (byte != 0) {
+      wf.write((char *)&byte, sizeof(byte));
     }
   }
   wf.close();
@@ -363,6 +347,12 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   keyCodes.clear();
   keyCodes = arbolcod->obtenerCodigos();
 
+  std::map<char, std::string>::iterator itMap;
+  for (itMap = keyCodes.begin(); itMap != keyCodes.end(); itMap++) {
+    std::cout << itMap->first          // char con la letra (key)
+              << ':' << itMap->second  // string con el codigo
+              << std::endl;
+  }
   // Se recibe cantidad de secuencias en el archivo
   int cantSeq;
   rf.read((char *)&cantSeq, sizeof(cantSeq));
@@ -372,13 +362,20 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
   short ident;
   int lengthBytes;
 
+  int Cont = 0;
+  char letter;
+  char result;
+  std::string concatBases;
+  bool set;
+  char letras[8];
   // se recorre el archivo dependiendo de la cantidad de secuencia
   for (int i = 0; i < cantSeq; i++) {
     name = "";
     Sequence seqAux;
     // se recibe tamaño del nombre
     rf.read((char *)&sizeName, sizeof(sizeName));
-    // nombre secuencia
+    // std::cout<<sizeName<<std::endl;
+    //  nombre secuencia
     for (int j = 0; j < sizeName; ++j) {
       char c;
       // se recibe el nombre caracter por caracter
@@ -386,32 +383,35 @@ void Controller::decodificar(Shell::argv_t argvs, Shell command) {
       name += c;
     }
     seqAux.setName(name);
-    std::bitset<8> bit;
-    std::string bitchar = "";
+
     // se lee la cantidad de bases en la secuencia
     rf.read((char *)&cantBases, sizeof(cantBases));
     // se lee la indentacion de cada linea
     rf.read((char *)&ident, sizeof(short));
-    // se lee la cantidad de bytes en la secuenca (solo para decodificar no para
-    // armar secuencia)
-    rf.read((char *)&lengthBytes, sizeof(lengthBytes));
-    int contBases = 0;
-    std::string concatBases;
-    for (int i = 0; i < lengthBytes; i++) {
-      rf.read((char *)&bit, sizeof(bit));
-      bitchar += bit.to_string();
-    }
-    // se retorna las bases concatenadas desencriptadas
-    concatBases = arbolcod->decodificar(bitchar, cantBases);
+
     // std::cout << name << std::endl;
-    // std::cout << concatBases << std::endl;
+    //  std::cout << concatBases << std::endl;
+    Cont = 0;
+    concatBases = "";
+    bool find = false;
+    while (Cont < cantBases) {
+      rf.read((char *)&letter, sizeof(letter));
+      for (int j = 0; j < 8; j++) {
+        set = letter & (1 << j);
+        letras[7 - j] = set ? '1' : '0';
+      }
+      for (int j = 0; j < 8; j++) {
+        result = arbolcod->decodificar(letras[j]);
+        if (result != '#' && Cont < cantBases) {
+          concatBases += result;
+          Cont++;
+        }
+      }
+    }
+
+    arbolcod->MoveBusq();
     seqAux.setBasesConcat(concatBases);
     seqAux.updateStruct(ident);
-    seqAux.generateMatrix();
-    // se debe crear una nueva secuencia con (nombre, basesConcat, indentacion)
-    // crear cada linea dependiendo la indentacion
-    // añadir linea a secuencia y luego añadir secuencia a la lista de
-    // secuencias
     sequences.push_back(seqAux);
   }
   rf.close();

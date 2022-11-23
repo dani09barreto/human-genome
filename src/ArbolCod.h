@@ -9,6 +9,7 @@
 class ArbolCod {
  protected:
   NodoCod *raiz;
+  NodoCod *Busq;
   std::map<char, std::string> codigos;
 
  public:
@@ -28,6 +29,7 @@ class ArbolCod {
       std::priority_queue<NodoCod *, std::vector<NodoCod *>, Compare> pq);
   void generarPQParaArbol(std::vector<char> letras, std::vector<int> freq);
   void generarCodigos(NodoCod *root, std::string str);
-  std::string decodificar(std::string cod, long long contBases);
+  char decodificar(char code);
+  void MoveBusq();
 };
 #endif

@@ -71,6 +71,7 @@ void ArbolCod::generarPQParaArbol(std::vector<char> letras,
     }
   }
   raiz = generarArbol(pq);
+  Busq = raiz;
   generarCodigos(raiz, "");
 }
 void ArbolCod::generarCodigos(NodoCod *root, std::string str) {
@@ -86,26 +87,14 @@ void ArbolCod::generarCodigos(NodoCod *root, std::string str) {
 }
 std::map<char, std::string> ArbolCod::obtenerCodigos() { return this->codigos; }
 
-std::string ArbolCod::decodificar(std::string cod, long long cantBases) {
-  std::string basesConcat = "";
-  int contBases = 0;
-  char byte;
-  if (!this->esVacio()) {
-    std::queue<char> cola_cod;
-    for (char ch : cod) {
-      cola_cod.push(ch);
-    }
-    while (!cola_cod.empty()) {
-      byte = this->obtenerRaiz()->decodificar(cola_cod);
-      basesConcat += byte;
-      contBases++;
-      if (cantBases == contBases){
-        return basesConcat;
-      }
-    }
-    return basesConcat;
+char ArbolCod::decodificar(char code) {
+  char letter = '#';
+  Busq = code == '1' ? Busq->obtenerHijoDer() : Busq->obtenerHijoIzq();
+  if (Busq->esHoja()) {
+    letter = Busq->obtenerLetra();
+    Busq = raiz;
   }
-  else{
-    return "+";
-  }
+  return letter;
 }
+
+void ArbolCod::MoveBusq() { Busq = raiz; }
